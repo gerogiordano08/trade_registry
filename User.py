@@ -1,4 +1,5 @@
 from methods import *
+from trade import Trade
 class User:
     def __init__(self, name:str, username:str, winning_trades:list[Trade], losing_trades:list[Trade], user_id=generate_id()):
         self.__name__ = name
