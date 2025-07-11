@@ -33,7 +33,7 @@ def id_exists(id, filename='users.json'):
     ids= list(data.keys())
     return 1 if id in ids else 0
 def generate_id(filename='users.json'):
-    new_id = check_last_id() + 1
-    while id_exists(new_id) == 1:
+    new_id = check_last_id(filename) + 1
+    while id_exists(new_id, filename) == 1:
         new_id += 1
     return new_id
