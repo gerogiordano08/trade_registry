@@ -1,7 +1,7 @@
 from methods import *
 from datetime import date
 class Trade:
-    def init(self, buy_date:date, sell_date:date, user_id:int, profit:int, ended:bool, trade_id=generate_id('trades.json')):
+    def init(self, buy_date:date, sell_date:date, user_id:int, profit:int, ended:bool, trade_id):
         self.__trade_id__ = trade_id
         self.__buy_date__ = buy_date
         self.__sell_date__ = sell_date

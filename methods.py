@@ -1,9 +1,7 @@
+from datetime import date
 import yfinance as yf
 import pandas
-from User import User
 import json
-from datetime import date
-
 def get_price(date:str, stock:str):
     ticker = yf.Ticker(stock.upper())
     data = ticker.history(start=date, period='1d')
@@ -11,16 +9,11 @@ def get_price(date:str, stock:str):
 
 def get_today_date():
     return date.today().strftime('%Y-%m-%d')
-
-def store_user(user:User, filename='users.json'):
+def user_exists(username, filename='users.json'):
     with open(filename, 'r', encoding='utf-8') as f:
         data = json.load(f)
-    entry = {user.get_user_id(): user.get_username()}
-    data.update(entry)
-    with open(filename, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
-    
-    print(f"Stored {user.get_username()} to {filename}")
+    usernames = list(data.values())
+    return 1 if username in usernames else 0
 def check_last_id(filename='users.json'):
     with open(filename, 'r', encoding='utf-8') as f:
         data = json.load(f)
