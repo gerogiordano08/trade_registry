@@ -1,1 +1,13 @@
-{}
+{
+  "2": {
+    "stock_name": "INTC.BA",
+    "quantity": 19,
+    "buy_date": "2025-06-26",
+    "buy_price": 5400.0,
+    "sell_date": "2025-07-16",
+    "sell_price": 5670.0,
+    "user_id": 1,
+    "profit": 5130.0,
+    "ended": true
+  }
+}

@@ -1,8 +1,7 @@
-from trade import Trade
 from methods import generate_id
 import json
 class User:
-    def __init__(self, name:str, username:str, winning_trades:list[Trade], losing_trades:list[Trade], user_id):
+    def __init__(self, name:str, username:str, winning_trades:list, losing_trades:list, user_id):
         self.__name__ = name
         self.__username__ = username
         self.__user_id__ = user_id
@@ -19,7 +18,7 @@ class User:
         return self.__winning_trades__
     def get_los_trades(self):
         return self.__losing_trades__
-    def store_user(self, filename='users.json'):
+    def store_user(self, filename='user_ids.json'):
         with open(filename, 'r', encoding='utf-8') as f:
             data = json.load(f)
         entry = {self.get_user_id(): self.get_username()}
