@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register Trade|The Trade Registry<</title>
+  </head>
+  <body>
+    <h1>Register New Trade</h1>
+
+    {% if error %}
+    <p style="color: red">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <label for="ticker">Ticker</label><br />
+      <input type="text" id="ticker" name="ticker" required /><br /><br />
+      <label for="quantity">Quantity</label><br />
+      <input type="number" id="quantity" name="quantity" required /><br /><br />
+      <label for="buy_date">Buy date</label><br />
+      <input type="date" id="buy_date" name="buy_date" required /><br /><br />
+      <label for="buy_price">Buy price</label><br />
+      <input
+        type="number"
+        id="buy_price"
+        name="buy_price"
+        required
+      /><br /><br />
+      <label for="sell_date">Sell date</label><br />
+      <input type="date" id="sell_date" name="sell_date" /><br /><br />
+      <label for="sell_price">Sell price</label><br />
+      <input type="number" id="sell_price" name="sell_price" /><br /><br />
+      <button type="submit">Register trade</button>
+    </form>
+  </body>
+</html>

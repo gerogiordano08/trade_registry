@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Trades|The Trade Registry</title>
+  </head>
+  <body>
+    <h1>Your trades</h1>
+    <div class="trades-container">
+      {% if trades %} {% for trade in trades %}
+      <div class="trade-card">
+        <h3>{{ trade.ticker }}</h3>
+        <p><strong>Quantity:</strong> {{ trade.quantity }}</p>
+        <p><strong>Buy Date:</strong> {{ trade.buy_date }}</p>
+        <p><strong>Buy Price:</strong> {{ trade.buy_price }}</p>
+        {% if trade.ended %}
+        <p><strong>Status:</strong> Ended</p>
+        <p><strong>Sell Date:</strong> {{ trade.sell_date }}</p>
+        <p><strong>Sell Price:</strong> {{ trade.sell_price }}</p>
+        <p><strong>Profit:</strong> {{ trade.profit }}</p>
+        <!--add percentage profit-->
+        {% else %}
+        <p><strong>Status:</strong> Ongoing</p>
+        <p>Profit if sold now: {{ trade.profit }}</p>
+        <!--add percentage profit-->
+        {% endif %}
+      </div>
+      {% endfor %} {% else %}
+      <p>No trades found.</p>
+      {% endif %}
+        <div class="actions">
+            <a href="{% url 'register_trade' %}">Register a new trade</a>
+    </div>
+  </body>
+</html>
