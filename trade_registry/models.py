@@ -8,7 +8,7 @@ class Trade(models.Model):
     quantity = models.PositiveIntegerField()
     buy_date = models.DateField()
     buy_price = models.DecimalField(max_digits=15, decimal_places=2)
-    sell_date = models.DateField()
+    sell_date = models.DateField(null=True, blank=True)
     sell_price = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)
     ended = models.BooleanField()
     profit = models.DecimalField(max_digits=15, decimal_places=2)

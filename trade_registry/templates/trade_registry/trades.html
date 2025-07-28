@@ -1,28 +1,38 @@
+    {% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Your Trades|The Trade Registry</title>
+    <title>Your Trades | The Trade Registry</title>
+    <link rel="stylesheet" href="{% static 'trade_registry/styles.css' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
   </head>
   <body>
-    <h1>Your trades</h1>
+    <nav><h1>The Trade Registry</h1> <ul class="navbar"><li>Home</li> <li>Help</li></ul></nav>
+    <h1 class="main-header">Your trades</h1>
     <div class="trades-container">
       {% if trades %} {% for trade in trades %}
       <div class="trade-card">
-        <h3>{{ trade.ticker }}</h3>
-        <p><strong>Quantity:</strong> {{ trade.quantity }}</p>
-        <p><strong>Buy Date:</strong> {{ trade.buy_date }}</p>
-        <p><strong>Buy Price:</strong> {{ trade.buy_price }}</p>
+        <h3 class="ticker">{{ trade.ticker }}</h3>
+        <p class="quantity"><strong>Quantity:</strong> {{ trade.quantity }}</p>
+        <div class="bought">
+        <p class="buy_date"><strong>Buy Date:</strong> {{ trade.buy_date }}</p>
+        <p class="buy_price"><strong>Buy Price:</strong> {{ trade.buy_price }}</p>
+        </div>
         {% if trade.ended %}
-        <p><strong>Status:</strong> Ended</p>
-        <p><strong>Sell Date:</strong> {{ trade.sell_date }}</p>
-        <p><strong>Sell Price:</strong> {{ trade.sell_price }}</p>
-        <p><strong>Profit:</strong> {{ trade.profit }}</p>
+        <p class="ended"><strong>Status:</strong> Ended</p>
+        <div class="sold">
+        <p class="sell_date"><strong>Sell Date:</strong> {{ trade.sell_date }}</p>
+        <p class="sell_price"><strong>Sell Price:</strong> {{ trade.sell_price }}</p>
+        </div>
+        <p class="profit"><strong>Profit:</strong> {{ trade.profit }}</p>
         <!--add percentage profit-->
         {% else %}
-        <p><strong>Status:</strong> Ongoing</p>
-        <p>Profit if sold now: {{ trade.profit }}</p>
+        <p class="ended"><strong>Status:</strong> Ongoing</p>
+        <p class="alt_profit">Profit if sold now: {{ trade.profit }}</p>
         <!--add percentage profit-->
         {% endif %}
       </div>
