@@ -1,6 +1,11 @@
 import yfinance as yf
-def get_price(date:str, stock:str):
+from django.utils import timezone
+from datetime import datetime
+def get_price(stock:str):
     ticker = yf.Ticker(stock.upper())
-    data = ticker.history(end=date, period='7d')
-    return data['Close'].iloc[-1] if not data.empty else None
-print(get_price('2025-07-27', 'CRM.BA'))  # Example usage
+    data = ticker.history(end=datetime.now(), period='7d')
+    try:
+        return ticker.fast_info['lastPrice']
+    except Exception:
+        return data.iloc[-1] if not data.empty else None
+print(get_price('CRM.BA'))  # Example usage

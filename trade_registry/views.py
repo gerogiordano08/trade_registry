@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Trade
 from .utils import get_price
 from django.utils import timezone
+from decimal import Decimal
 # Create your views here.
 @login_required
 def register_trade(request):
@@ -14,22 +15,12 @@ def register_trade(request):
         sell_date = request.POST.get('sell_date') or None
         sell_price = request.POST.get('sell_price')
         sell_price = float(sell_price) if sell_price else None
-        ended = sell_date is not None and sell_price is not None
 
         buy_date = timezone.datetime.strptime(buy_date, '%Y-%m-%d').date()
 
         if sell_date:
             sell_date = timezone.datetime.strptime(sell_date, '%Y-%m-%d').date()
 
-        if sell_price:
-            profit = (sell_price - buy_price) * quantity 
-        else:
-            if get_price(timezone.now().date().isoformat(), ticker) == None:
-              return render(request, 'trade_registry/register.html', 
-                {'error': f'Error fetching price data for: {ticker}',
-                 'buy_date': buy_date, 'quantity': quantity, 'buy_price': buy_price,})
-            else:
-                profit = (get_price(timezone.now().date().isoformat(), ticker) - buy_price) * quantity
 
         trade = Trade(
             user = request.user,
@@ -39,8 +30,6 @@ def register_trade(request):
             buy_price = buy_price,
             sell_date = sell_date,
             sell_price = sell_price,
-            ended = ended,
-            profit = profit
         )
         trade.save()
         return redirect('trades')
@@ -48,4 +37,14 @@ def register_trade(request):
 @login_required
 def list_trades(request):
     trades = Trade.objects.filter(user=request.user).order_by('-buy_date')
+    ticker_set = set(trade.ticker for trade in trades if not trade.sell_date)
+    live_prices = {}
+    for ticker in ticker_set:
+        live_prices[ticker] = get_price(ticker)
+    for trade in trades:
+        if not trade.sell_date:
+            price = live_prices[trade.ticker]
+            trade.live_profit = (Decimal(price) - trade.buy_price) * trade.quantity
+            trade.live_percentage_profit = trade.live_profit / (trade.quantity * trade.buy_price)
+    
     return render(request, 'trade_registry/trades.html', {'trades': trades})
