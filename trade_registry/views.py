@@ -4,6 +4,9 @@ from .models import Trade
 from .utils import get_price
 from django.utils import timezone
 from decimal import Decimal
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from .forms import CustomUserCreationForm
 # Create your views here.
 @login_required
 def register_trade(request):
@@ -45,6 +48,27 @@ def list_trades(request):
         if not trade.sell_date:
             price = live_prices[trade.ticker]
             trade.live_profit = (Decimal(price) - trade.buy_price) * trade.quantity
-            trade.live_percentage_profit = trade.live_profit / (trade.quantity * trade.buy_price)
+            trade.live_percentage_profit = trade.live_profit / (trade.quantity * trade.buy_price) * 100
+            if trade.live_profit < 0:
+                trade.live_profit = trade.live_profit * -1
+                trade.live_percentage_profit = trade.live_percentage_profit * -1
     
     return render(request, 'trade_registry/trades.html', {'trades': trades})
+@login_required
+def index(request):
+    return render(request, 'trade_registry/index.html')
+@login_required
+def help(request):
+    return render(request, 'trade_registry/help.html')
+def signup(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('index')
+        else:
+            print("Form is not valid:", form.errors)
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'registration/signup.html', {'form': form})

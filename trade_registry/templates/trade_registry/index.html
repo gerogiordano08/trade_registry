@@ -1,0 +1,5 @@
+{% extends "trade_registry/base.html" %} {% block title %} The Trade Registry {% endblock %} {% block content %}
+<h1 >Welcome to The Trade Registry</h1>
+<a href="{% url 'register_trade' %}">Register a new trade</a>
+<a href="{% url 'trades' %}">View your trades</a>
+{% endblock %}

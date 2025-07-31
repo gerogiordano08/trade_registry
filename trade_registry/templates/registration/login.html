@@ -1,0 +1,15 @@
+{% extends "trade_registry/base.html" %} {% block title %}Login | The Trade
+Registry{% endblock %} {% block content %}
+<form method="post">
+  <h2>Login</h2>
+  <br />
+  {% if error %}
+  <p style="color: red">{{ error }}</p>
+  {% endif %} {% csrf_token %}
+  <label for="username">Username</label><br />
+  <input type="text" id="username" name="username" required /><br /><br />
+  <label for="password">Password</label><br />
+  <input type="password" id="password" name="password" required /><br /><br />
+  <button type="submit">Login</button>
+</form>
+{% endblock %}

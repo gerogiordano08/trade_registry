@@ -1,0 +1,27 @@
+{% extends "trade_registry/base.html" %} {% block title %}Sign Up | The Trade
+Registry{% endblock %} {% block content %}
+
+<form method="POST" >
+  <h2 >Sign Up</h2>
+  <br />
+  {% if error %}
+  <p style="color: red">{{ error }}</p>
+  {% endif %} {% csrf_token %}
+  <label for="First Name">First Name</label><br />
+  <input type="text" id="first_name" name="first_name" required /><br /><br />
+
+  <label for="username">Username</label><br />
+  <input type="text" id="username" name="username" required /><br /><br />
+
+  <label for="email">Email</label><br />
+  <input type="email" id="email" name="email" required /><br /><br />
+
+  <label for="password1">Password</label><br />
+  <input type="password" id="password1" name="password1" required /><br /><br />
+
+  <label for="password2">Confirm Password</label><br />
+  <input type="password" id="password2" name="password2" required /><br /><br />
+
+  <button type="submit">Sign Up</button>
+</form>
+{% endblock %}

@@ -51,7 +51,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'the_trade_registry.urls'
-
+LOGIN_REDIRECT_URL = '/trades/'
+LOGIN_URL = '/login/'
+LOGOUT_REDIRECT_URL = '/login/'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

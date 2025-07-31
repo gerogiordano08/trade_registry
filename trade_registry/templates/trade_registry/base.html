@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'trade_registry/styles.css' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav>
+      <a href="{% url 'index'%}"><h1>The Trade Registry</h1></a>
+      <ul class="navbar">
+        <li>Help</li>
+      </ul>
+    </nav>
+    {% block content %} {% endblock %}
+    <footer>gerogiordano08@gmail.com</footer>
+  </body>
+</html>
+<script>
+  function toggleProfit(element) {
+    const absValue = element.getAttribute('data-abs');
+    const pctValue = element.getAttribute('data-pct');
+    const isShowingAbs = element.innerText.trim().startsWith('$');
+
+    if (isShowingAbs){
+      element.innerText = pctValue + '%';
+
+    } else {
+      element.innerText = '$' + absValue;
+    }
+  }
+</script>

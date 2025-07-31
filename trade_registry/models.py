@@ -19,4 +19,10 @@ class Trade(models.Model):
         return (self.sell_price - self.buy_price) * self.quantity if self.is_ended else None
     @property
     def percentage_profit(self):
-        return f'%{self.profit /(self.quantity * self.buy_price)}'
+        return self.profit /(self.quantity * self.buy_price) * 100 if self.is_ended else None
+    @property
+    def profit_to_loss(self):
+        return self.profit * -1 if self.profit < 0 else self.profit 
+    @property
+    def percentage_profit_to_loss(self):
+        return self.percentage_profit * -1 if self.percentage_profit < 0 else self.percentage_profit
