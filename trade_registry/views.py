@@ -68,7 +68,8 @@ def signup(request):
             login(request, user)
             return redirect('index')
         else:
-            print("Form is not valid:", form.errors)
+            error= form.errors.as_data()
+            return render(request, 'registration/signup.html', {'form': form, 'error': error})
     else:
         form = CustomUserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})

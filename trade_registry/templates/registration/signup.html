@@ -1,27 +1,35 @@
 {% extends "trade_registry/base.html" %} {% block title %}Sign Up | The Trade
 Registry{% endblock %} {% block content %}
 
-<form method="POST" >
+<form class="log-sign-form" method="POST" >
   <h2 >Sign Up</h2>
   <br />
-  {% if error %}
-  <p style="color: red">{{ error }}</p>
-  {% endif %} {% csrf_token %}
-  <label for="First Name">First Name</label><br />
-  <input type="text" id="first_name" name="first_name" required /><br /><br />
+{% csrf_token %}
+  <label for="first_name">First Name</label><br />
+  <input type="text" id="first_name" name="first_name" required placeholder="First Name" value="{{ form.first_name.value|default:''}}"/><br /><br />
 
   <label for="username">Username</label><br />
-  <input type="text" id="username" name="username" required /><br /><br />
+  <input type="text" id="username" name="username" required placeholder="Username" value="{{ form.username.value|default:'' }}"/><br /><br />
 
   <label for="email">Email</label><br />
-  <input type="email" id="email" name="email" required /><br /><br />
+  <input type="email" id="email" name="email" required placeholder="Email" value="{{ form.email.value|default:'' }}"/><br /><br />
 
   <label for="password1">Password</label><br />
-  <input type="password" id="password1" name="password1" required /><br /><br />
+  <input type="password" id="password1" name="password1" required placeholder="Password"/><br /><br />
 
   <label for="password2">Confirm Password</label><br />
-  <input type="password" id="password2" name="password2" required /><br /><br />
+  <input type="password" id="password2" name="password2" required placeholder="Confirm Password"/><br /><br />
 
-  <button type="submit">Sign Up</button>
+  <button type="submit">Sign Up</button><br/>
+  <a href="{% url 'login' %}" style="margin-top: 0.5em; position: absolute;">Login</a>
+
 </form>
+
+<ul class="password-conditions">
+  <li class="{% for error in form.password2.errors %}{% if 'too similar' in error %}password-error{% endif %}{% endfor %}">A password can’t be too similar to the users other personal information.</li>
+  <li class="{% for error in form.password2.errors %}{% if 'too short' in error %}password-error{% endif %}{% endfor %}">A password must contain at least 8 characters.</li>
+  <li class="{% for error in form.password2.errors %}{% if 'too common' in error %}password-error{% endif %}{% endfor %}">A password can’t be a commonly used password.</li>
+  <li class="{% for error in form.password2.errors %}{% if 'entirely numeric' in error %}password-error{% endif %}{% endfor %}">A password can’t be entirely numeric.</li>
+</ul>
+
 {% endblock %}

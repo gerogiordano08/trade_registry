@@ -17,7 +17,12 @@
     <nav>
       <a href="{% url 'index'%}"><h1>The Trade Registry</h1></a>
       <ul class="navbar">
-        <li>Help</li>
+        <button>Dashboard</button>
+        <button>Help</button>
+        <form class="logout-form" action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button class="logout-button" type="submit">Logout</button>
+        </form>
       </ul>
     </nav>
     {% block content %} {% endblock %}

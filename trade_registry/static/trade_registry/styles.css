@@ -34,6 +34,7 @@ nav {
 }
 
 .navbar {
+  width: 10%;
   display: flex;
   flex-direction: row;
   gap: 10%;
@@ -49,7 +50,27 @@ nav {
   margin: 0 auto 3em auto;
   padding: 1em 1.5%;
 }
+.index-container {
+  width: 90%;
+  position: relative;
+  display: grid;
+  grid-template-columns: 20% 20%;
+  gap: 1em;
+  border-radius: 5px;
+  margin: 0 auto 3em auto;
+  padding: 1em 1.5%;
+}
+.index-header {
+  grid-column: 1 / -1;
 
+}
+.index-link{
+  height: 15em;
+  border: 2px solid #1b3c53;
+  border-radius: 10px;
+  padding: 1em;
+  background-color: #fefeff;
+}
 .container-header {
   position: relative;
   display: inline-block;
@@ -112,9 +133,11 @@ nav {
   grid-row: 3;
 }
 
-form {
+.log-sign-form {
   position: absolute;
-  left: 40%;
+
+  margin-left: 50%;
+  transform: translate(-50%, 0);
   margin-top: 2em;
   width: 12%;
 }
@@ -136,6 +159,7 @@ button {
   color: #f9f3ef;
   border: none;
   border-radius: 5px;
+  position: relative;
   cursor: pointer;
 }
 button:hover {
@@ -158,12 +182,15 @@ a {
   background-color: #2b2b2b;
 }
 #register {
+  position: absolute;
+
   left: 10%;
   width: 40%;
   display: grid;
   grid-template-columns: auto auto auto;
   grid-template-rows: auto auto;
   gap: 1em;
+  margin-top: 2em;
 }
 /* Chrome, Safari, Edge */
 input[type="number"]::-webkit-outer-spin-button,
@@ -175,4 +202,39 @@ input[type="number"]::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+.password-conditions {
+  background-color: white;
+  border: .3px solid #2b2b2b;
+  border-radius: 5px;
+  font-weight: 300;
+  font-size: small;
+  box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  position: absolute;
+  left: 56%;
+  list-style-type: disc;
+  padding: 1em 2em;
+  margin: 28em 2.5em;
+}
+.password-error {
+  color: rgb(213, 74, 74);
+  font-weight: bold;
+}
+.logout-button {
+  background-color: #1b3c53;
+  color: #f9f3ef;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5em;
+  cursor: pointer;
+}
+.logout-form{
+  display: -webkit-flex;
+  right: 10em;
+position: absolute;
+  width: min-content;
+  margin: 0;
 }
