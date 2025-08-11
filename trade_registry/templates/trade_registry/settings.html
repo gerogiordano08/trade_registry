@@ -1,0 +1,28 @@
+{% extends "trade_registry/base.html" %}
+{% block title %}Settings | The Trade Registry{% endblock %}
+{% block content %}
+<div class="settings-container">
+    
+    <form method="post" class="log-sign-form">`
+        <h1 class="settings-header">Change Information</h1>
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="{{ user.email }}" required>
+        </div>
+        <div class="form-group">
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" value="{{ user.username }}" required>
+        </div>
+        <button type="submit" class="save-button">Save Changes</button><br/>
+        <a href="{% url 'password_change' %}" style="margin-top: 0.5em; position: absolute;">Change Password</a>
+    </form>
+    <div class="password-change-link">
+        
+    </div>
+</div>
+{% endblock %}

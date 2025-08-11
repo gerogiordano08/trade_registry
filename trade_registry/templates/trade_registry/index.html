@@ -1,6 +1,6 @@
 {% extends "trade_registry/base.html" %} {% block title %} The Trade Registry {% endblock %} {% block content %}
 <div class="index-container">
-<h1 class="index-header">Welcome to The Trade Registry</h1>
+<h1 class="index-header">Welcome to The Trade Registry, {{ first_name }}</h1>
 <a href="{% url 'register_trade' %}" class="index-link">Register a new trade</a>
 <a href="{% url 'trades' %}" class="index-link">View your trades</a>
 </div>

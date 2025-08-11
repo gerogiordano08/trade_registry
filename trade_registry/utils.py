@@ -3,7 +3,7 @@ from django.utils import timezone
 from datetime import datetime
 def get_price(stock:str):
     ticker = yf.Ticker(stock.upper())
-    data = ticker.history(end=datetime.now(), period='7d')
+    data = ticker.history(end=timezone.now(), period='7d')
     try:
         return ticker.fast_info['lastPrice']
     except Exception:

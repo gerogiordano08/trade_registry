@@ -17,12 +17,20 @@
     <nav>
       <a href="{% url 'index'%}"><h1>The Trade Registry</h1></a>
       <ul class="navbar">
-        <button>Dashboard</button>
-        <button>Help</button>
-        <form class="logout-form" action="{% url 'logout' %}" method="post">
+        {% if user.is_authenticated %}
+        <button onclick="toggleDropdown()" class="drop-button">{{ user.username}}</button>
+        <div id="dropdown" class="hidden menu">
+         
+          <ul> <li onclick="toggleDropdown()">{{ user.username}}</li>
+          <li><a href="{% url 'settings'%}">Settings</a></li>
+          <li><form class="logout-form" action="{% url 'logout' %}" method="post">
           {% csrf_token %}
-          <button class="logout-button" type="submit">Logout</button>
-        </form>
+          <button class="logout-button" type="submit">Logout</button></form></li></ul>
+        </div>
+        <a href="{% url 'help' %}" class="anchor-button">Help</a>
+        {% else %}
+        <button>Help</button>
+        {% endif %}
       </ul>
     </nav>
     {% block content %} {% endblock %}
@@ -42,4 +50,21 @@
       element.innerText = '$' + absValue;
     }
   }
+  function toggleDropdown() {
+    const dropdown = document.getElementById('dropdown');
+    if (dropdown.classList.contains('hidden')) {
+      dropdown.classList.remove('hidden');
+    } else {
+      dropdown.classList.add('hidden');
+    }
+  }
+
+  document.addEventListener('click', function(e) {
+    const dropdown = document.getElementById("dropdown");
+    const button = document.querySelector(".drop-button");
+    if (!dropdown.contains(e.target) && !button.contains(e.target)) {
+      dropdown.classList.add("hidden");
+    }
+  });
+
 </script>

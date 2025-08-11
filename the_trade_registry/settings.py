@@ -27,17 +27,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
+    'trade_registry.apps.TradeRegistryConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'trade_registry.apps.TradeRegistryConfig',
 ]
 
 MIDDLEWARE = [
@@ -101,7 +100,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -128,6 +126,14 @@ SESSION_COOKIE_AGE = 60 * 60 * 24
 SESSION_EXPIRY_AT_BROWSER_CLOSE = True
 SESSION_SAVE_EVERY_REQUEST = True
 
-SESSION_COOKIE_SECURE = False #TRUE IN PRODUCTION
+SESSION_COOKIE_SECURE = True #TRUE IN PRODUCTION
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'noreply.traderegistry@gmail.com'
+EMAIL_HOST_PASSWORD = 'bcwt tzpz ybqy upyy'
+DEFAULT_FROM_EMAIL = 'The Trade Registry <noreply.traderegistry@gmail.com>'

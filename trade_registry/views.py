@@ -50,13 +50,15 @@ def list_trades(request):
             trade.live_profit = (Decimal(price) - trade.buy_price) * trade.quantity
             trade.live_percentage_profit = trade.live_profit / (trade.quantity * trade.buy_price) * 100
             if trade.live_profit < 0:
+                trade.loss = True
                 trade.live_profit = trade.live_profit * -1
                 trade.live_percentage_profit = trade.live_percentage_profit * -1
     
     return render(request, 'trade_registry/trades.html', {'trades': trades})
 @login_required
 def index(request):
-    return render(request, 'trade_registry/index.html')
+    first_name = request.user.first_name if request.user.first_name else "User"
+    return render(request, 'trade_registry/index.html', {'first_name': first_name})
 @login_required
 def help(request):
     return render(request, 'trade_registry/help.html')
@@ -73,3 +75,19 @@ def signup(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
+@login_required
+def settings(request):
+    user = request.user
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        if first_name:
+            user.first_name = first_name
+        if email:
+            user.email = email
+        if username:
+            user.username = username
+        user.save()
+        return redirect('index')
+    return render(request, 'trade_registry/settings.html', {'user': user})

@@ -34,11 +34,12 @@ nav {
 }
 
 .navbar {
-  width: 10%;
+  width: fit-content;
   display: flex;
   flex-direction: row;
   gap: 10%;
   list-style-type: none;
+  padding-left: 0;
 }
 .trades-container {
   width: 90%;
@@ -152,7 +153,7 @@ input {
   border-radius: 5px;
   box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.25);
 }
-button {
+button, .anchor-button {
   width: 100%;
   padding: 0.5em;
   background-color: #1b3c53;
@@ -162,7 +163,7 @@ button {
   position: relative;
   cursor: pointer;
 }
-button:hover {
+button:hover, .anchor-button:hover {
   background-color: #2b2b2b;
 }
 a {
@@ -234,7 +235,34 @@ input[type="number"] {
 .logout-form{
   display: -webkit-flex;
   right: 10em;
-position: absolute;
   width: min-content;
   margin: 0;
+}
+.hidden {
+  display: none;
+}
+#dropdown {
+  position: absolute;
+  width: fit-content;
+  justify-content: center;
+  font-size: small;
+  top: 2.8em;
+  color: #1b3c53;
+  padding-left: 0%;
+  padding: .5em;
+  background-color: #fefeff;
+  border: 2px solid #1b3c53;
+  border-radius: 10px;
+  box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+}
+#dropdown ul {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  gap: .5em;
+  padding-left: 0;
+}
+#dropdown ul li {
+  cursor: pointer;
 }

@@ -31,7 +31,7 @@ Trade Registry{% endblock %} {% block content %}
     {% else %}
     <div class="profits">
       <p class="ended"><strong>Status:</strong> Ongoing {{ apl }}</p>
-      {% if  trade.live_profit > 0 %}
+      {% if  trade.loss == False %}
       <p class="alt_profit">
         Profit if sold now: <span style="color: #2e7d32; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.live_profit|floatformat:2 }}" data-pct="{{ trade.live_percentage_profit|floatformat:2}}">${{ trade.live_profit|floatformat:2 }}</span>
       </p>
@@ -41,6 +41,7 @@ Trade Registry{% endblock %} {% block content %}
       </p>
       {% endif %}
     </div>
+    
     <!--total profits-->
 
     {% endif %}
