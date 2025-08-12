@@ -1,11 +1,7 @@
-{% extends 'trade_registry/base.html' %} {% block title %}Your Trades | The
-Trade Registry{% endblock %} {% block content %}
-
-<div class="trades-container">
-  <h1 class="container-header">Your trades</h1>
-
-  {% if trades %} {% for trade in trades %}
-  <div class="trade-card">
+{% extends 'trade_registry/base.html' %}
+{% block title %}{{ trade.ticker }} | The Trade Registry{% endblock %}
+{% block content %}
+<div class="trade-card">
     <h3 class="ticker">{{ trade.ticker }}</h3>
     <p class="quantity"><strong>Quantity:</strong> {{ trade.quantity }}</p>
     <div class="bought">
@@ -45,16 +41,10 @@ Trade Registry{% endblock %} {% block content %}
 
 
     {% endif %}  
-    <form class="delform"action="{% url 'delete_trade' trade.id %}" method="post" style="display:inline;">
+
+    <form class="delform"action="{% url 'delete_trade' trade.id %}" method="post">
     {% csrf_token %}
     <button type="submit" class="delbutton">Eliminar</button>
     </form>
   </div>
-  {% endfor %} {% else %}
-  <p>No trades found.</p>
-  {% endif %}
-</div>
-<div class="actions" style="position:sticky; bottom: 4em">
-  <a href="{% url 'register_trade' %}">Register a new trade</a>
-</div>
 {% endblock %}

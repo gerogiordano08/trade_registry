@@ -1,8 +1,8 @@
 # Trade Registry
 
-The Trade Registry serves as a centralized platform that facilitates the registration and organization of your trades. During the initial development phase, the script is be finalized for a single user’s local deployment. Subsequent updates will encompass the following areas:
+The Trade Registry, a centralized platform built with Django and deployed with PythonAnywhere, facilitates the registration and organization of your trades. Here are some of its features:
 
-- Frontend and Web Application Development
-- User System Enhancements
-- Database Optimization
-- Additional Improvements
+- You can register your trades with or without a sell date. If you register it without a sell date, the status will be ‘ongoing’, and the profit shown will assume it’s sold the moment the web page is refreshed.
+- You can switch the profit to show percentage by clicking it.
+- A simple page displays your registered trades.
+- Users can sign up, login, change their passwords, and reset their passwords (if they’ve forgotten them). 

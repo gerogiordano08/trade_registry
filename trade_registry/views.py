@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Trade
 from .utils import get_price
@@ -91,3 +91,14 @@ def settings(request):
         user.save()
         return redirect('index')
     return render(request, 'trade_registry/settings.html', {'user': user})
+@login_required
+def delete_trade(request, trade_id):
+    trade = get_object_or_404(Trade, id=trade_id, user=request.user)
+    if request.method == 'POST':
+        trade.delete()
+        return redirect('trades')
+    return render(request, 'trade_registry/confirm_delete.html', {'trade': trade})
+@login_required
+def trade_detail(request, trade_id):
+    trade = get_object_or_404(Trade, id=trade_id, user=request.user)
+    return render(request, 'trade_registry/trade_detail.html', {'trade': trade})

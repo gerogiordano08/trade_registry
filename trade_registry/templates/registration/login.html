@@ -12,7 +12,7 @@ Registry{% endblock %} {% block content %}
   <label for="password">Password</label><br />
   <input type="password" id="password" name="password" required placeholder="Password" /><br /><br />
   <button type="submit">Login</button> <br/>
-
+   
   <a href="{% url 'signup' %}" style="margin-top: 0.5em; position: absolute;">Sign up</a>
   <p><a href="{% url 'password_reset' %}" style="margin-top: 1em; position: absolute;">Forgot your password?</a></p>
 </form>
