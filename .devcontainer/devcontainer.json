@@ -21,7 +21,10 @@
         }
     },
     "features": {
-        "ghcr.io/devcontainers/features/git:1": {}
+        "ghcr.io/devcontainers/features/git:1": {},
+        "ghcr.io/devcontainers/features/common-utils:2.5.6": {
+        "installSsh": true
+    }
     },
     // Si tu Dockerfile crea un usuario no-root (como 'appuser'), ponlo aquí:
     "remoteUser": "appuser",
