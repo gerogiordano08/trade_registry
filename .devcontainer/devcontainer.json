@@ -1,0 +1,31 @@
+{
+    "name": "Trade Registry Dev Environment",
+    "dockerComposeFile": ["../docker-compose.yml"],
+    "service": "tradereg",
+    "workspaceFolder": "/usr/src/app",
+    
+    // Configuraciones de VS Code DENTRO del contenedor
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python", // Autocompletado y linter de Python
+                "ms-python.vscode-pylance",
+                "batisteo.vscode-django", // Soporte para plantillas Django
+                "njpwerner.autodocstring",
+                "github.vscode-pull-request-github"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.testing.pytestEnabled": true
+            }
+        }
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/git:1": {}
+    },
+    // Si tu Dockerfile crea un usuario no-root (como 'appuser'), ponlo aquí:
+    "remoteUser": "appuser",
+
+    // Evita que el contenedor se apague al cerrar VS Code
+    "shutdownAction": "stopCompose"
+}

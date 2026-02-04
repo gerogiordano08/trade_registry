@@ -31,5 +31,15 @@ Registry{% endblock %} {% block content %}
   <li class="{% for error in form.password2.errors %}{% if 'too common' in error %}password-error{% endif %}{% endfor %}">A password can’t be a commonly used password.</li>
   <li class="{% for error in form.password2.errors %}{% if 'entirely numeric' in error %}password-error{% endif %}{% endfor %}">A password can’t be entirely numeric.</li>
 </ul>
-
+{% if form.errors %}
+    {% for error in form.non_field_errors %}
+        <p style="color: red;">{{ error }}</p>
+    {% endfor %}
+    
+    {% for field in form %}
+        {% for error in field.errors %}
+            <p style="color: red;"><strong>{{ field.label }}:</strong> {{ error }}</p>
+        {% endfor %}
+    {% endfor %}
+{% endif %}
 {% endblock %}

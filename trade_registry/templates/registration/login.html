@@ -4,9 +4,9 @@ Registry{% endblock %} {% block content %}
 <form class="log-sign-form" method="post">
   <h2>Login</h2>
   <br />
-  {% if error %}
-  <p style="color: red">{{ error }}</p>
-  {% endif %} {% csrf_token %}
+{% if form.errors %}
+        <p style="color: red;">Invalid password or username</p>
+{% endif %} {% csrf_token %}
   <label for="username">Username</label><br />
   <input type="text" id="username" name="username" required placeholder="Username" value="{{ form.username.value|default:'' }}"/><br /><br />
   <label for="password">Password</label><br />

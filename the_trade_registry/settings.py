@@ -1,3 +1,4 @@
+import os
 """
 Django settings for the_trade_registry project.
 
@@ -11,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,9 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-f%hd&j)l@l*m#b8wthv(b7u68)^64!gpfj0c6-^api#qq2uab%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+IN_PRODUCTION = os.environ.get('RENDER') is not None
 
 # Application definition
 
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -73,11 +75,15 @@ WSGI_APPLICATION = 'the_trade_registry.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
+load_dotenv()
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
 
@@ -116,7 +122,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-
+BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -126,9 +133,38 @@ SESSION_COOKIE_AGE = 60 * 60 * 24
 SESSION_EXPIRY_AT_BROWSER_CLOSE = True
 SESSION_SAVE_EVERY_REQUEST = True
 
-SESSION_COOKIE_SECURE = True #TRUE IN PRODUCTION
-SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
+
+#if IN_PRODUCTION:
+    # --- Configuración para Render (Producción) ---
+#    DEBUG = True
+    # Cookies Seguras: Solo se envían si hay HTTPS
+#    SESSION_COOKIE_SECURE = False
+#    CSRF_COOKIE_SECURE = False
+    
+    # CRUCIAL: Le dice a Django que confíe en el header de Render para saber si es HTTPS.
+    # Sin esto, Django creerá que no es seguro y bloqueará las cookies.
+#    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    
+    # Redirigir todo el tráfico HTTP a HTTPS
+#    SECURE_SSL_REDIRECT = False
+    
+    # Dominios permitidos (Render te da una URL tipo onrender.com)
+#    ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME'), '*']
+
+#else:
+    # --- Configuración para Local (Desarrollo) ---
+DEBUG = True
+#SESSION_COOKIE_SECURE = False
+#CSRF_COOKIE_SECURE = False
+#SECURE_SSL_REDIRECT = False
+#ALLOWED_HOSTS = ['*']
+# settings.py
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
