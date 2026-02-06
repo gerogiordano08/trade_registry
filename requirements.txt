@@ -8,3 +8,4 @@ finnhub-python
 gunicorn
 gevent
 whitenoise #
+django-bootstrap5

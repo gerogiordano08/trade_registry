@@ -1,5 +1,6 @@
 {% extends "trade_registry/base.html" %} {% block title %}Register Trade | The Trade Registry{% endblock %} {% block content %} {% load static %}
- {% if error %}
+{% load django_bootstrap5 %}
+{% if error %}
 <p style="color: red">{{ error }}</p>
 {% endif %}
 
@@ -7,17 +8,34 @@
   <h1 class="container-header">Register a new trade</h1>
 
   {% csrf_token %}
-  <div>
-    <label for="ticker">Ticker</label><br />
-    <input
-      type="text"
-      id="ticker"
-      name="ticker"
-      required
-      value="{{ ticker|default:'' }}"
-    /><br /><br />
+ <!--<div class="mb-3 position-relative" id="search-container">
+    <label for="ticker">Search Ticker</label>
+    <div>
+        <span><i></i></span>
+        <input 
+        type="text" 
+        id="ticker" 
+        name="ticker" 
+        required
+        placeholder="Type a ticker...">
+    </div>
     
-  </div>
+    <ul id="tickerDropdown" class="list-group position-absolute w-100 shadow-lg d-none" style="z-index: 1000; top: 100%;">
+        </ul> 
+</div>-->
+<div class="mb-3 position-relative">
+    <label for="ticker">Search Ticker</label>
+    <input 
+    type="text" 
+    name="ticker"
+    id="ticker" 
+    class="form-control" 
+    placeholder="Type to search..." 
+    autocomplete="off">
+    
+    <ul id="tickerDropdown" class="list-group position-absolute w-100 shadow-lg d-none custom_dropdown" style="z-index: 1050; max-height: 200px; overflow-y: auto;">
+        </ul>
+</div>
   <div>
     <label for="buy_date">Buy date</label><br />
     <input
@@ -25,7 +43,7 @@
       id="buy_date"
       name="buy_date"
       style="font-family: 'Lato';"
-
+      class="form-control"
       required
       value="{{ buy_date|default:'' }}"
     /><br /><br />
@@ -36,6 +54,7 @@
       type="number"
       id="buy_price"
       name="buy_price"
+      class="form-control"
       required
       value="{{ buy_price|default:'' }}"
     /><br /><br />
@@ -46,20 +65,37 @@
       type="number"
       id="quantity"
       name="quantity"
+      class="form-control"
       required
       value="{{ quantity|default:'' }}"
     /><br /><br />
   </div>
   <div>
     <label for="sell_date">Sell date</label><br />
-    <input type="date" id="sell_date" name="sell_date"  
-      style="font-family: 'Lato';"
+    <input 
+    type="date"
+    id="sell_date" 
+    name="sell_date"  
+    style="font-family: 'Lato';"
+    class="form-control"
     /><br /><br />
   </div>
   <div>
     <label for="sell_price">Sell price</label><br />
-    <input type="number" id="sell_price" name="sell_price" /><br /><br />
+    <input 
+    type="number" 
+    id="sell_price" 
+    name="sell_price" 
+    class="form-control"
+    /><br /><br />
   </div>
-  <button type="submit">Register trade</button>
+  <button type="submit" id="submit-button">Register trade</button>
 </form>
+
+{% block scripts %}
+{% bootstrap_javascript %}
+    <script src="{% static '/trade_registry/js/ticker_search_dropdown.js' %}"></script>
+{% endblock %} 
 {% endblock %}
+
+

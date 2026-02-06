@@ -1,10 +1,12 @@
 {% load static %}
+{% load django_bootstrap5 %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %} {% endblock %}</title>
+    {% bootstrap_css %}
     <link rel="stylesheet" href="{% static 'trade_registry/styles.css' %}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,7 +19,7 @@
   <body>
     <nav>
       <a href="{% url 'index'%}"><h1>The Trade Registry</h1></a>
-      <ul class="navbar">
+      <ul class="custom_navbar">
         {% if user.is_authenticated %}
         <button onclick="toggleDropdown()" class="drop-button">{{ user.username}}</button>
         <div id="dropdown" class="hidden menu">
