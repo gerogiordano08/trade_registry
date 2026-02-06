@@ -4,6 +4,7 @@ python-dotenv
 djangorestframework
 drf-spectacular
 yfinance
+finnhub-python
 gunicorn
 gevent
 whitenoise #
