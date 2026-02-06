@@ -4,16 +4,19 @@ Registry{% endblock %} {% block content %}
 <form class="log-sign-form" method="post">
   <h2>Login</h2>
   <br />
-{% if form.errors %}
-        <p style="color: red;">Invalid password or username</p>
-{% endif %} {% csrf_token %}
+ {% csrf_token %}
   <label for="username">Username</label><br />
   <input type="text" id="username" name="username" required placeholder="Username" value="{{ form.username.value|default:'' }}"/><br /><br />
   <label for="password">Password</label><br />
   <input type="password" id="password" name="password" required placeholder="Password" /><br /><br />
   <button type="submit">Login</button> <br/>
-   
-  <a href="{% url 'signup' %}" style="margin-top: 0.5em; position: absolute;">Sign up</a>
-  <p><a href="{% url 'password_reset' %}" style="margin-top: 1em; position: absolute;">Forgot your password?</a></p>
+  <span id="extra-options">
+  {% if form.errors %}
+    <p style="color: red;">Invalid password or username</p>
+  {% endif %}
+  <a href="{% url 'signup' %}">Sign up</a>
+  <p><a href="{% url 'password_reset' %}" >Forgot your password?</a></p>
+  </span>
 </form>
+
 {% endblock %}

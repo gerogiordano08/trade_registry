@@ -11,6 +11,7 @@ class Trade(models.Model):
     buy_price = models.DecimalField(max_digits=15, decimal_places=2)
     sell_date = models.DateField(null=True, blank=True)
     sell_price = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)
+    
     @property
     def is_ended(self):
         return self.sell_date is not None and self.sell_price is not None

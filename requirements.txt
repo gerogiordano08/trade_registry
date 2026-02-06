@@ -1,6 +1,8 @@
 Django==4.2.0
 psycopg2-binary
 python-dotenv
+djangorestframework
+drf-spectacular
 yfinance
 gunicorn
 gevent

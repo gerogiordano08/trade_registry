@@ -303,3 +303,11 @@ input[type="number"] {
     top: auto;
   }
 }
+.extra-options{
+  display: flex;
+  flex-direction: column; 
+  gap: 15px;              
+  list-style: none;
+  padding: 0;
+  margin-top: 0.5em;
+}
