@@ -6,37 +6,21 @@ from django.utils import timezone
 from decimal import Decimal
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, TradeForm
 # Create your views here.
 @login_required
 def register_trade(request):
     if request.method == 'POST':
-        ticker = request.POST['ticker']
-        quantity = int(request.POST['quantity'])
-        buy_date = request.POST['buy_date']
-        buy_price = float(request.POST['buy_price'])
-        sell_date = request.POST.get('sell_date') or None
-        sell_price = request.POST.get('sell_price')
-        sell_price = float(sell_price) if sell_price else None
-
-        buy_date = timezone.datetime.strptime(buy_date, '%Y-%m-%d').date()
-
-        if sell_date:
-            sell_date = timezone.datetime.strptime(sell_date, '%Y-%m-%d').date()
-
-
-        trade = Trade(
-            user = request.user,
-            ticker = ticker,
-            quantity = quantity,
-            buy_date = buy_date,
-            buy_price = buy_price,
-            sell_date = sell_date,
-            sell_price = sell_price,
-        )
-        trade.save()
-        return redirect('trades')
-    return render(request, 'trade_registry/register.html')
+        form = TradeForm(request.POST)
+        if form.is_valid():
+            # Aquí Django ya validó que los números sean números y las fechas sean fechas
+            trade = form.save(commit=False)
+            trade.user = request.user
+            trade.save()
+            return redirect('trades')
+    else:
+        form = TradeForm()
+    return render(request, 'trade_registry/register.html', {'form': form})
 @login_required
 def list_trades(request):
     trades = Trade.objects.filter(user=request.user).order_by('-buy_date')

@@ -4,92 +4,36 @@
 <p style="color: red">{{ error }}</p>
 {% endif %}
 
-<form id="register" method="POST">
+<form id="register" method="POST" class="form">
   <h1 class="container-header">Register a new trade</h1>
 
   {% csrf_token %}
- <!--<div class="mb-3 position-relative" id="search-container">
-    <label for="ticker">Search Ticker</label>
-    <div>
-        <span><i></i></span>
-        <input 
-        type="text" 
-        id="ticker" 
-        name="ticker" 
-        required
-        placeholder="Type a ticker...">
-    </div>
-    
-    <ul id="tickerDropdown" class="list-group position-absolute w-100 shadow-lg d-none" style="z-index: 1000; top: 100%;">
-        </ul> 
-</div>-->
+
 <div class="mb-3 position-relative">
-    <label for="ticker">Search Ticker</label>
-    <input 
-    type="text" 
-    name="ticker"
-    id="ticker" 
-    class="form-control" 
-    placeholder="Type to search..." 
-    autocomplete="off">
+    <div class="col-md-12">{% bootstrap_field form.ticker %}</div>
     
     <ul id="tickerDropdown" class="list-group position-absolute w-100 shadow-lg d-none custom_dropdown" style="z-index: 1050; max-height: 200px; overflow-y: auto;">
         </ul>
+
+        <div class="col-md-12">{% bootstrap_field form.buy_date %}</div>
+            <div class="col-md-12">{% bootstrap_field form.buy_price %}</div>
+            <div class="col-md-12">{% bootstrap_field form.quantity %}</div>
+            <div class="col-md-12">
+                <hr>
+                <h5>Optional Sell Data</h5>
+            </div>
+            <div class="col-md-12">{% bootstrap_field form.sell_date %}</div>
+            <div class="col-md-12">{% bootstrap_field form.sell_price %}</div>
+        </div>
+        <div class="col-md-50 d-flex flex-column mb-4">
+    
+    <div class="flex-grow-1"></div> 
+
+    <button type="submit" id="submit-button" class="btn btn-primary w-auto h-auto mt-auto" disabled>
+        Register trade
+    </button>
 </div>
-  <div>
-    <label for="buy_date">Buy date</label><br />
-    <input
-      type="date"
-      id="buy_date"
-      name="buy_date"
-      style="font-family: 'Lato';"
-      class="form-control"
-      required
-      value="{{ buy_date|default:'' }}"
-    /><br /><br />
-  </div>
-  <div>
-    <label for="buy_price">Buy price</label><br />
-    <input
-      type="number"
-      id="buy_price"
-      name="buy_price"
-      class="form-control"
-      required
-      value="{{ buy_price|default:'' }}"
-    /><br /><br />
-  </div>
-    <div>
-    <label for="quantity">Quantity</label><br />
-    <input
-      type="number"
-      id="quantity"
-      name="quantity"
-      class="form-control"
-      required
-      value="{{ quantity|default:'' }}"
-    /><br /><br />
-  </div>
-  <div>
-    <label for="sell_date">Sell date</label><br />
-    <input 
-    type="date"
-    id="sell_date" 
-    name="sell_date"  
-    style="font-family: 'Lato';"
-    class="form-control"
-    /><br /><br />
-  </div>
-  <div>
-    <label for="sell_price">Sell price</label><br />
-    <input 
-    type="number" 
-    id="sell_price" 
-    name="sell_price" 
-    class="form-control"
-    /><br /><br />
-  </div>
-  <button type="submit" id="submit-button">Register trade</button>
+</div>
 </form>
 
 {% block scripts %}

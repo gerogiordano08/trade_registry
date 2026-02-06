@@ -1,3 +1,4 @@
+document.addEventListener('DOMContentLoaded', () => {
 const input = document.getElementById('ticker');
 const list = document.getElementById('tickerDropdown');
 const submitBtn = document.getElementById('submit-button');
@@ -55,4 +56,5 @@ function renderResults(results) {
 input.addEventListener('input', () => {
     isTickerValid = false;
     submitBtn.disabled = true;
+});
 });
