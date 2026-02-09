@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .serializers import TickerSearchSerializer
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
+from .utils import save_tickers_to_session_pool
 import requests
 import finnhub
 class TickerSearchAPIView(APIView):
@@ -61,6 +62,10 @@ class TickerSearchAPIView(APIView):
             return Response({"error": "External API failed"}, status=500)
 
         serializer = TickerSearchSerializer(data, many=True)
+        request.session['has_searched'] = True 
+        request.session.modified = True
+
+        save_tickers_to_session_pool(request.session.session_key, serializer.data)
         return Response({"results": serializer.data})
     def _search_alpha(self, query):
         api_key = os.environ.get('ALPHA_VANTAGE_API_KEY')
@@ -83,8 +88,6 @@ class TickerSearchAPIView(APIView):
         }
         url = f"https://query1.finance.yahoo.com/v1/finance/search?q={query}"
         r = requests.get(url, headers=headers, timeout=5)
-        print(f"Status Code: {r.status_code}")
-        print(f"Response Content: {r.text[:500]}")
         data = r.json()        
         matches = data.get('quotes', [])
                 

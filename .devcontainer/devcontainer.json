@@ -16,7 +16,12 @@
             ],
             "settings": {
                 "python.defaultInterpreterPath": "/usr/local/bin/python",
-                "python.testing.pytestEnabled": true
+                "python.testing.pytestEnabled": true,
+                "remote.portsAttributes": {
+    "30000-65535": {
+        "onAutoForward": "ignore"
+    }
+}
             }
         }
     },
@@ -30,5 +35,9 @@
     "remoteUser": "appuser",
 
     // Evita que el contenedor se apague al cerrar VS Code
-    "shutdownAction": "stopCompose"
+    "shutdownAction": "stopCompose",
+
+    "forwardPorts": [8000, 5432],
+
+    
 }

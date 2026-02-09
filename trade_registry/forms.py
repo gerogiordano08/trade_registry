@@ -1,7 +1,10 @@
 from django import forms
+import requests
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from .models import Trade
+from .api.utils import is_ticker_in_session_pool
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
@@ -34,3 +37,16 @@ class TradeForm(forms.ModelForm):
             'sell_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+
+    def clean_ticker(self):
+        ticker = self.cleaned_data.get('ticker').upper().strip()
+        session_id = self.request.session.session_key if self.request else None
+        if not is_ticker_in_session_pool(session_id, ticker):
+            raise forms.ValidationError(
+                "Error: Ticker must be selected from dropdown list."
+            )
+
+        return ticker

@@ -11,7 +11,7 @@ from .forms import CustomUserCreationForm, TradeForm
 @login_required
 def register_trade(request):
     if request.method == 'POST':
-        form = TradeForm(request.POST)
+        form = TradeForm(request.POST, request=request)
         if form.is_valid():
             # Aquí Django ya validó que los números sean números y las fechas sean fechas
             trade = form.save(commit=False)

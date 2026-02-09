@@ -35,7 +35,7 @@ nav {
 }
 
 
-.navbar {
+.custom_navbar {
   width: fit-content;
   display: flex;
   flex-direction: row;
