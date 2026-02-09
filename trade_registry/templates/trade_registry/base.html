@@ -38,36 +38,8 @@
     </nav>
     {% block content %} {% endblock %}
     <footer>gerogiordano08@gmail.com</footer>
+    {% block scripts %} 
+    <script src="{% static '/trade_registry/js/navbar_dropdown.js' %}"></script>{% endblock%}
   </body>
 </html>
-<script>
-  function toggleProfit(element) {
-    const absValue = element.getAttribute('data-abs');
-    const pctValue = element.getAttribute('data-pct');
-    const isShowingAbs = element.innerText.trim().startsWith('$');
 
-    if (isShowingAbs){
-      element.innerText = pctValue + '%';
-
-    } else {
-      element.innerText = '$' + absValue;
-    }
-  }
-  function toggleDropdown() {
-    const dropdown = document.getElementById('dropdown');
-    if (dropdown.classList.contains('hidden')) {
-      dropdown.classList.remove('hidden');
-    } else {
-      dropdown.classList.add('hidden');
-    }
-  }
-
-  document.addEventListener('click', function(e) {
-    const dropdown = document.getElementById("dropdown");
-    const button = document.querySelector(".drop-button");
-    if (!dropdown.contains(e.target) && !button.contains(e.target)) {
-      dropdown.classList.add("hidden");
-    }
-  });
-
-</script>

@@ -1,5 +1,5 @@
 {% extends 'trade_registry/base.html' %} {% block title %}Your Trades | The
-Trade Registry{% endblock %} {% block content %}
+Trade Registry{% endblock %} {% block content %}{% load static %}{% load django_bootstrap5 %}
 
 <div class="trades-container">
   <h1 class="container-header">Your trades</h1>
@@ -13,37 +13,35 @@ Trade Registry{% endblock %} {% block content %}
       <p class="buy_price"><strong>Buy Price:</strong> {{ trade.buy_price }}</p>
     </div>
     {% if trade.is_ended %}
-    <div class="sold">
-      <p class="sell_date"><strong>Sell Date:</strong> {{ trade.sell_date }}</p>
-      <p class="sell_price">
-        <strong>Sell Price:</strong> {{ trade.sell_price }}
-      </p>
-    </div>
-    <div class="profits">
-      <p class="ended"><strong>Status:</strong> Ended</p>
-      {% if  trade.profit > 0 %}
-      <p class="profit" ><strong>Profit:</strong> <span style="color: #2e7d32; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.profit|floatformat:2 }}" data-pct="{{ trade.percentage_profit|floatformat:2}}">${{ trade.profit }}</span></p>
-      {% else %}
-      <p class="profit" ><strong>Loss:</strong> <span style="color: #c62828; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.profit_to_loss|floatformat:2 }}" data-pct="{{ trade.percentage_profit_to_loss|floatformat:2}}">${{ trade.profit_to_loss }}</span></p>
-      {% endif %}
-    </div>
+      <div class="sold">
+        <p class="sell_date"><strong>Sell Date:</strong> {{ trade.sell_date }}</p>
+        <p class="sell_price">
+          <strong>Sell Price:</strong> {{ trade.sell_price }}
+        </p>
+      </div>
+      <div class="profits">
+        <p class="ended"><strong>Status:</strong> Ended</p>
+        {% if  trade.profit > 0 %}
+        <p class="profit" ><strong>Profit:</strong> <span style="color: #2e7d32; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.profit|floatformat:2 }}" data-pct="{{ trade.percentage_profit|floatformat:2}}">${{ trade.profit }}</span></p>
+        {% else %}
+        <p class="profit" ><strong>Loss:</strong> <span style="color: #c62828; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.profit_to_loss|floatformat:2 }}" data-pct="{{ trade.percentage_profit_to_loss|floatformat:2}}">${{ trade.profit_to_loss }}</span></p>
+        {% endif %}
+      </div>
 
     {% else %}
-    <div class="profits">
-      <p class="ended"><strong>Status:</strong> Ongoing {{ apl }}</p>
-      {% if  trade.loss == False %}
-      <p class="alt_profit">
-        Profit if sold now: <span style="color: #2e7d32; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.live_profit|floatformat:2 }}" data-pct="{{ trade.live_percentage_profit|floatformat:2}}">${{ trade.live_profit|floatformat:2 }}</span>
-      </p>
-      {% else %}
-            <p class="alt_profit">
-        Loss if sold now: <span style="color: #c62828; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.live_profit|floatformat:2 }}" data-pct="{{ trade.live_percentage_profit|floatformat:2}}">${{ trade.live_profit|floatformat:2 }}</span>
-      </p>
-      {% endif %}
-    </div>
+      <div class="profits">
+        <p class="ended"><strong>Status:</strong> Ongoing </p>
+        {% if  trade.live_metrics.is_loss == False %}
+        <p class="alt_profit">
+          Profit if sold now: <span style="color: #2e7d32; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.live_metrics.live_profit|floatformat:2 }}" data-pct="{{ trade.live_metrics.live_percentage_profit|floatformat:2}}">${{ trade.live_metrics.live_profit|floatformat:2 }}</span>
+        </p>
+        {% else %}
+              <p class="alt_profit">
+          Loss if sold now: <span style="color: #c62828; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.live_metrics.live_profit|floatformat:2 }}" data-pct="{{ trade.live_metrics.live_percentage_profit|floatformat:2}}">${{ trade.live_metrics.live_profit|floatformat:2 }}</span>
+        </p>
+        {% endif %}
+      </div>
     
-
-
     {% endif %}  
     <form class="delform"action="{% url 'delete_trade' trade.id %}" method="post" style="display:inline;">
     {% csrf_token %}
@@ -57,4 +55,9 @@ Trade Registry{% endblock %} {% block content %}
 <div class="actions" style="position:sticky; bottom: 4em">
   <a href="{% url 'register_trade' %}">Register a new trade</a>
 </div>
+
+{% block scripts %}
+{% bootstrap_javascript %}
+    <script src="{% static '/trade_registry/js/decimal_to_percentage.js' %}"></script>
+{% endblock %} 
 {% endblock %}

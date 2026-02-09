@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Trade
-from .utils import get_price
+from .api.service_utils import get_live_prices_bulk
 from django.utils import timezone
 from decimal import Decimal
 from django.contrib.auth.forms import UserCreationForm
@@ -25,19 +25,16 @@ def register_trade(request):
 def list_trades(request):
     trades = Trade.objects.filter(user=request.user).order_by('-buy_date')
     ticker_set = set(trade.ticker for trade in trades if not trade.sell_date)
-    live_prices = {}
-    for ticker in ticker_set:
-        live_prices[ticker] = get_price(ticker)
+    live_prices = get_live_prices_bulk(ticker_set)
     for trade in trades:
         if not trade.sell_date:
             price = live_prices[trade.ticker]
-            trade.live_profit = (Decimal(price) - trade.buy_price) * trade.quantity
-            trade.live_percentage_profit = trade.live_profit / (trade.quantity * trade.buy_price) * 100
-            if trade.live_profit < 0:
-                trade.loss = True
-                trade.live_profit = trade.live_profit * -1
-                trade.live_percentage_profit = trade.live_percentage_profit * -1
-    
+            try:
+                trade.live_metrics = trade.get_live_metrics(price)
+            except Exception as e:
+                print("Live price couldn't be fetched")
+                trade.live_metrics = trade.get_live_metrics(trade.buy_price)
+                return render(request, 'trade_registry/trades.html', {'trades': trades})
     return render(request, 'trade_registry/trades.html', {'trades': trades})
 @login_required
 def index(request):

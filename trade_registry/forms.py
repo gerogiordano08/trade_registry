@@ -42,7 +42,7 @@ class TradeForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
     def clean_ticker(self):
-        ticker = self.cleaned_data.get('ticker').upper().strip()
+        ticker = self.cleaned_data.get('ticker').upper().strip() # type: ignore
         session_id = self.request.session.session_key if self.request else None
         if not is_ticker_in_session_pool(session_id, ticker):
             raise forms.ValidationError(
