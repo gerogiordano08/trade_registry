@@ -22,7 +22,7 @@ class TradeForm(forms.ModelForm):
     class Meta:
         model = Trade
         
-        fields = ['ticker', 'buy_date', 'buy_price', 'quantity', 'sell_date', 'sell_price']
+        fields = ['ticker', 'name', 'buy_date', 'buy_price', 'quantity', 'sell_date', 'sell_price']
         
         widgets = {
             'ticker': forms.TextInput(attrs={
@@ -31,6 +31,7 @@ class TradeForm(forms.ModelForm):
                 'placeholder': 'Ej: AAPL',
                 'autocomplete': 'off'
             }),
+            'name': forms.HiddenInput(attrs={'id':'name'}),
             'buy_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'sell_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'buy_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),

@@ -13,7 +13,6 @@ def register_trade(request):
     if request.method == 'POST':
         form = TradeForm(request.POST, request=request)
         if form.is_valid():
-            # Aquí Django ya validó que los números sean números y las fechas sean fechas
             trade = form.save(commit=False)
             trade.user = request.user
             trade.save()
@@ -28,9 +27,9 @@ def list_trades(request):
     live_prices = get_live_prices_bulk(ticker_set)
     for trade in trades:
         if not trade.sell_date:
-            price = live_prices[trade.ticker]
+            trade.price = live_prices[trade.ticker]
             try:
-                trade.live_metrics = trade.get_live_metrics(price)
+                trade.live_metrics = trade.get_live_metrics(trade.price)
             except Exception as e:
                 print("Live price couldn't be fetched")
                 trade.live_metrics = trade.get_live_metrics(trade.buy_price)

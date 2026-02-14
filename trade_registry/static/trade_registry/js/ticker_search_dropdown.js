@@ -1,11 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-const input = document.getElementById('ticker');
+const tickerInput = document.getElementById('ticker');
+const  nameInput = document.getElementById('name');
 const list = document.getElementById('tickerDropdown');
 const submitBtn = document.getElementById('submit-button');
 let isTickerValid = false;
 submitBtn.disabled = true;
 
-input.addEventListener('input', async (e) => {
+tickerInput.addEventListener('input', async (e) => {
     const query = e.target.value;
     if (query.length < 2) {
         list.classList.add('d-none');
@@ -41,7 +42,8 @@ function renderResults(results) {
         `;
 
         li.onclick = () => {
-            input.value = item.symbol;
+            tickerInput.value = item.symbol;
+            nameInput.value = item.name
             list.classList.add('d-none');
             isTickerValid = true;
             submitBtn.disabled = false;
@@ -53,7 +55,7 @@ function renderResults(results) {
 }
 
 
-input.addEventListener('input', () => {
+tickerInput.addEventListener('input', () => {
     isTickerValid = false;
     submitBtn.disabled = true;
 });

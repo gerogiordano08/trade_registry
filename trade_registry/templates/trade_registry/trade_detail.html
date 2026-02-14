@@ -1,50 +1,58 @@
 {% extends 'trade_registry/base.html' %}
 {% block title %}{{ trade.ticker }} | The Trade Registry{% endblock %}
 {% block content %}
-<div class="trade-card">
-    <h3 class="ticker">{{ trade.ticker }}</h3>
-    <p class="quantity"><strong>Quantity:</strong> {{ trade.quantity }}</p>
-    <div class="bought">
-      <p class="buy_date"><strong>Buy Date:</strong> {{ trade.buy_date }}</p>
-      <p class="buy_price"><strong>Buy Price:</strong> {{ trade.buy_price }}</p>
-    </div>
-    {% if trade.is_ended %}
-    <div class="sold">
-      <p class="sell_date"><strong>Sell Date:</strong> {{ trade.sell_date }}</p>
-      <p class="sell_price">
-        <strong>Sell Price:</strong> {{ trade.sell_price }}
-      </p>
-    </div>
-    <div class="profits">
-      <p class="ended"><strong>Status:</strong> Ended</p>
-      {% if  trade.profit > 0 %}
-      <p class="profit" ><strong>Profit:</strong> <span style="color: #2e7d32; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.profit|floatformat:2 }}" data-pct="{{ trade.percentage_profit|floatformat:2}}">${{ trade.profit }}</span></p>
-      {% else %}
-      <p class="profit" ><strong>Loss:</strong> <span style="color: #c62828; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.profit_to_loss|floatformat:2 }}" data-pct="{{ trade.percentage_profit_to_loss|floatformat:2}}">${{ trade.profit_to_loss }}</span></p>
-      {% endif %}
-    </div>
+<div class="container-fluid py-4">
+    <div class="row g-4">
+        
+        <div class="col-md-8 d-flex flex-column">
+            
+            <div class="p-4 mb-4 bg-white rounded shadow-sm border-start border-4 border-primary">
+                <h2 class="fw-bold mb-1">{{ trade.ticker }}</h2>
+                <p class="text-muted">{{ trade.name }} - Detail</p>
+                <div class="row mt-4">
+                    <div class="col-6 col-sm-3">
+                        <small class="text-muted d-block">Buy price</small>
+                        <span class="h5">{{ trade.buy_price}}</span>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <small class="text-muted d-block">Quantity</small>
+                        <span class="h5">{{ trade.quantity}}</span>
+                    </div>
+                </div>
+            </div>
 
-    {% else %}
-    <div class="profits">
-      <p class="ended"><strong>Status:</strong> Ongoing {{ apl }}</p>
-      {% if  trade.loss == False %}
-      <p class="alt_profit">
-        Profit if sold now: <span style="color: #2e7d32; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.live_profit|floatformat:2 }}" data-pct="{{ trade.live_percentage_profit|floatformat:2}}">${{ trade.live_profit|floatformat:2 }}</span>
-      </p>
-      {% else %}
-            <p class="alt_profit">
-        Loss if sold now: <span style="color: #c62828; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.live_profit|floatformat:2 }}" data-pct="{{ trade.live_percentage_profit|floatformat:2}}">${{ trade.live_profit|floatformat:2 }}</span>
-      </p>
-      {% endif %}
+            <div class="p-4 bg-white rounded shadow-sm flex-grow-1">
+                <h5 class="fw-bold mb-3">Recent news</h5>
+                <div class="overflow-auto" style="max-height: 400px;">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action py-3">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1 fw-bold">Important news</h6>
+                                <small>2h ago</small>
+                            </div>
+                            <p class="mb-1 small text-muted">Example news, traderegistry.io</p>
+                        </a>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="h-100 p-4 bg-white rounded shadow-sm border">
+                <h5 class="fw-bold mb-4">Historial / Otras Cosas</h5>
+                <ul class="timeline">
+                    <li class="mb-3">
+                        <small class="text-primary fw-bold">11 Feb 2026</small>
+                        <p class="mb-0 small">Apertura de posición - Estrategia Swing</p>
+                    </li>
+                    <li class="mb-3">
+                        <small class="text-muted fw-bold">10 Feb 2026</small>
+                        <p class="mb-0 small">Alerta de precio alcanzada ($179.00)</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
     </div>
-    
-
-
-    {% endif %}  
-
-    <form class="delform"action="{% url 'delete_trade' trade.id %}" method="post">
-    {% csrf_token %}
-    <button type="submit" class="delbutton">Eliminar</button>
-    </form>
-  </div>
+</div>
 {% endblock %}

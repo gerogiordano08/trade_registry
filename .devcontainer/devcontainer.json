@@ -12,7 +12,11 @@
                 "ms-python.vscode-pylance",
                 "batisteo.vscode-django", // Soporte para plantillas Django
                 "njpwerner.autodocstring",
-                "github.vscode-pull-request-github"
+                "github.vscode-pull-request-github",
+                "junstyle.vscode-django-support",
+                "ecmel.vscode-html-css",
+                "christian-kohler.path-intellisense",
+                
             ],
             "settings": {
                 "python.defaultInterpreterPath": "/usr/local/bin/python",

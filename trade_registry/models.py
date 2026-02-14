@@ -9,6 +9,7 @@ TradeMetrics = namedtuple('TradeMetrics', ['live_price', 'live_profit', 'live_pe
 class Trade(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name= 'trends')
     ticker = models.CharField(max_length=20)
+    name = models.CharField(max_length=100, default="TBD")
     quantity = models.PositiveIntegerField()
     buy_date = models.DateField()
     buy_price = models.DecimalField(max_digits=15, decimal_places=2)
@@ -20,16 +21,16 @@ class Trade(models.Model):
         return self.sell_date is not None and self.sell_price is not None
     @property
     def profit(self):
-        return (self.sell_price - self.buy_price) * self.quantity if self.is_ended else None
+        return (self.sell_price - self.buy_price) * self.quantity if self.is_ended else None #type:ignore
     @property
     def percentage_profit(self):
-        return self.profit /(self.quantity * self.buy_price) * 100 if self.is_ended else None
+        return self.profit /(self.quantity * self.buy_price) * 100 if self.is_ended else None #type:ignore
     @property
     def profit_to_loss(self):
-        return self.profit * -1 if self.profit < 0 else self.profit 
+        return self.profit * -1 if self.profit < 0 else self.profit #type:ignore
     @property
     def percentage_profit_to_loss(self):
-        return self.percentage_profit * -1 if self.percentage_profit < 0 else self.percentage_profit
+        return self.percentage_profit * -1 if self.percentage_profit < 0 else self.percentage_profit #type:ignore
     def get_live_metrics(self, price):
         live_profit = (Decimal(price) - self.buy_price) * self.quantity
         live_percentage_profit = ((Decimal(price) - self.buy_price) / self.buy_price )* 100 

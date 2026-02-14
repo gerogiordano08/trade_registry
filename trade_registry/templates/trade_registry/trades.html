@@ -6,17 +6,17 @@ Trade Registry{% endblock %} {% block content %}{% load static %}{% load django_
 
   {% if trades %} {% for trade in trades %}
   <div class="trade-card">
-    <h3 class="ticker">{{ trade.ticker }}</h3>
+    <h3 class="ticker"><a href="{% url 'trade_detail' trade.id%}">{{ trade.ticker }}</a></h3>
     <p class="quantity"><strong>Quantity:</strong> {{ trade.quantity }}</p>
     <div class="bought">
       <p class="buy_date"><strong>Buy Date:</strong> {{ trade.buy_date }}</p>
-      <p class="buy_price"><strong>Buy Price:</strong> {{ trade.buy_price }}</p>
+      <p class="buy_price"><strong>Buy Price:</strong> ${{ trade.buy_price }}</p>
     </div>
     {% if trade.is_ended %}
       <div class="sold">
         <p class="sell_date"><strong>Sell Date:</strong> {{ trade.sell_date }}</p>
         <p class="sell_price">
-          <strong>Sell Price:</strong> {{ trade.sell_price }}
+          <strong>Sell Price:</strong> ${{ trade.sell_price }}
         </p>
       </div>
       <div class="profits">
@@ -31,6 +31,7 @@ Trade Registry{% endblock %} {% block content %}{% load static %}{% load django_
     {% else %}
       <div class="profits">
         <p class="ended"><strong>Status:</strong> Ongoing </p>
+        <p class="ended"><strong>Price:</strong> ${{ trade.price|floatformat:2 }}</p>
         {% if  trade.live_metrics.is_loss == False %}
         <p class="alt_profit">
           Profit if sold now: <span style="color: #2e7d32; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.live_metrics.live_profit|floatformat:2 }}" data-pct="{{ trade.live_metrics.live_percentage_profit|floatformat:2}}">${{ trade.live_metrics.live_profit|floatformat:2 }}</span>
