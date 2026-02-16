@@ -5,6 +5,9 @@ from .services.utils import get_live_prices_bulk, get_price
 from django.db import transaction
 from django.contrib.auth import login
 from .forms import CustomUserCreationForm, TradeForm, TickerForm
+from django.contrib import messages
+from django.utils import timezone
+
 # Create your views here.
 @login_required
 def register_trade(request):
@@ -101,3 +104,23 @@ def trade_detail(request, trade_id):
     trade.price = get_price(trade.ticker)
     trade.live_metrics = trade.get_live_metrics(trade.price)
     return render(request, 'trade_registry/trade_detail.html', {'trade': trade})
+
+@login_required
+def delete_trade(request, trade_id):
+    trade = get_object_or_404(Trade, id=trade_id, user=request.user)
+    symbol = trade.ticker.symbol
+    trade.delete()
+    
+    messages.success(request, f"{symbol} trade has been deleted permanently.")
+    return redirect('trades') 
+
+@login_required
+def close_trade(request, trade_id):
+    trade = get_object_or_404(Trade, id=trade_id, user=request.user)
+    
+    trade.sell_date = timezone.now()
+    # trade.sell_price =
+    trade.save()
+    
+    messages.info(request, f"{trade.ticker.symbol} closed succesfully.")
+    return redirect('trade_detail', {'trade': trade})

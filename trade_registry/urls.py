@@ -18,5 +18,7 @@ urlpatterns = [
     path(r'reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), name='password_reset_complete'),
     path('delete-trade/<int:trade_id>/', views.delete_trade, name='delete_trade'),
-    path('trades/<int:trade_id>/', views.trade_detail, name='trade_detail')
+    path('trades/<int:trade_id>/', views.trade_detail, name='trade_detail'),
+    path('trade/<int:trade_id>/delete/', views.delete_trade, name='delete_trade'),
+    path('trade/<int:trade_id>/close/', views.close_trade, name='close_trade')
 ]
