@@ -11,3 +11,4 @@ whitenoise #
 django-bootstrap5
 redis
 django-redis
+feedparser

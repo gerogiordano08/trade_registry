@@ -1,8 +1,7 @@
 import requests
 import finnhub
 import os
-import yfinance as yf
-from django.core.cache import cache
+
 
 def search_alpha(query):
         api_key = os.environ.get('ALPHA_VANTAGE_API_KEY')
@@ -52,45 +51,3 @@ def search_finnhub(query):
         return clean_matches
 
 
-def get_price(ticker):
-    cache_key = f"price_{ticker}"
-    price = cache.get(cache_key)
-    
-    if price is None:
-        data = yf.Ticker(ticker)
-        price = data.fast_info['last_price']
-        cache.set(cache_key, price, 240)
-    return price
-
-def get_live_prices_bulk(ticker_list):
-    if not ticker_list:
-        return {}
-
-    prices = {}
-    needed_tickers = []
-    for t in ticker_list:
-        cached = cache.get(f"price_{t}")
-        if cached:
-            prices[t] = cached
-        else:
-            needed_tickers.append(t)
-
-    if needed_tickers:
-        data = yf.download(
-            tickers=needed_tickers, 
-            period="1d", 
-            interval="1m", 
-            group_by='ticker', 
-            auto_adjust=True, 
-            threads=True
-        )
-
-        for ticker in needed_tickers:
-            try:
-                last_price = data[ticker]['Close'].iloc[-1] # type: ignore
-                prices[ticker] = float(last_price)
-                cache.set(f"price_{ticker}", prices[ticker], 120) 
-            except Exception:
-                prices[ticker] = None 
-
-    return prices

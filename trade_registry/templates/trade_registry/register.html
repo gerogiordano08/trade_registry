@@ -10,21 +10,21 @@
   {% csrf_token %}
 
 <div class="mb-3 position-relative">
-    <div class="col-md-12">{% bootstrap_field form.ticker %}</div>
-    <div>{% bootstrap_field form.name %}</div>
+    <div class="col-md-12">{% bootstrap_field ticker_form.symbol %}</div>
+    <div>{% bootstrap_field ticker_form.name %}</div>
     
     <ul id="tickerDropdown" class="list-group position-absolute w-100 shadow-lg d-none custom_dropdown" style="z-index: 1050; max-height: 200px; overflow-y: auto;">
         </ul>
 
-        <div class="col-md-12">{% bootstrap_field form.buy_date %}</div>
-            <div class="col-md-12">{% bootstrap_field form.buy_price %}</div>
-            <div class="col-md-12">{% bootstrap_field form.quantity %}</div>
+        <div class="col-md-12">{% bootstrap_field trade_form.buy_date %}</div>
+            <div class="col-md-12">{% bootstrap_field trade_form.buy_price %}</div>
+            <div class="col-md-12">{% bootstrap_field trade_form.quantity %}</div>
             <div class="col-md-12">
                 <hr>
                 <h5>Optional Sell Data</h5>
             </div>
-            <div class="col-md-12">{% bootstrap_field form.sell_date %}</div>
-            <div class="col-md-12">{% bootstrap_field form.sell_price %}</div>
+            <div class="col-md-12">{% bootstrap_field trade_form.sell_date %}</div>
+            <div class="col-md-12">{% bootstrap_field trade_form.sell_price %}</div>
         </div>
         <div class="col-md-50 d-flex flex-column mb-4">
     

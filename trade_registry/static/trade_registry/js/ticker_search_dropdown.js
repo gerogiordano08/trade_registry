@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-const tickerInput = document.getElementById('ticker');
+const tickerInput = document.getElementById('symbol');
 const  nameInput = document.getElementById('name');
 const list = document.getElementById('tickerDropdown');
 const submitBtn = document.getElementById('submit-button');

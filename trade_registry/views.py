@@ -1,33 +1,50 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Trade
-from .api.service_utils import get_live_prices_bulk
-from django.utils import timezone
-from decimal import Decimal
-from django.contrib.auth.forms import UserCreationForm
+from .models import Trade, Ticker
+from .services.utils import get_live_prices_bulk, get_price
+from django.db import transaction
 from django.contrib.auth import login
-from .forms import CustomUserCreationForm, TradeForm
+from .forms import CustomUserCreationForm, TradeForm, TickerForm
 # Create your views here.
 @login_required
 def register_trade(request):
     if request.method == 'POST':
-        form = TradeForm(request.POST, request=request)
-        if form.is_valid():
-            trade = form.save(commit=False)
-            trade.user = request.user
-            trade.save()
-            return redirect('trades')
+        trade_form = TradeForm(request.POST, prefix='trade')
+        ticker_form = TickerForm(request.POST, prefix='ticker')
+        if ticker_form.is_valid() and trade_form.is_valid():
+            symbol = ticker_form.cleaned_data.get('symbol').upper()
+            try:
+                with transaction.atomic():
+                    ticker_obj, created = Ticker.objects.get_or_create(symbol=symbol)
+                    
+                    if created:
+                        ticker_obj.symbol = symbol
+                        ticker_obj.name = ticker_form.cleaned_data.get('name') or ""
+                        ticker_obj.save()
+                    
+                    trade = trade_form.save(commit=False)
+                    trade.user = request.user
+                    trade.ticker = ticker_obj
+                    trade.save()
+                    return redirect('trades')
+            except Exception as e:
+                trade_form.add_error(None, f"Database error: {e}")
     else:
-        form = TradeForm()
-    return render(request, 'trade_registry/register.html', {'form': form})
+        trade_form = TradeForm(prefix='trade')
+        ticker_form = TickerForm(prefix='ticker')
+
+    return render(request, 'trade_registry/register.html', {
+        'trade_form': trade_form,
+        'ticker_form': ticker_form
+    })
 @login_required
 def list_trades(request):
     trades = Trade.objects.filter(user=request.user).order_by('-buy_date')
-    ticker_set = set(trade.ticker for trade in trades if not trade.sell_date)
+    ticker_set = set(trade.ticker.symbol for trade in trades if not trade.sell_date)
     live_prices = get_live_prices_bulk(ticker_set)
     for trade in trades:
         if not trade.sell_date:
-            trade.price = live_prices[trade.ticker]
+            trade.price = live_prices[trade.ticker.symbol]
             try:
                 trade.live_metrics = trade.get_live_metrics(trade.price)
             except Exception as e:
@@ -81,4 +98,6 @@ def delete_trade(request, trade_id):
 @login_required
 def trade_detail(request, trade_id):
     trade = get_object_or_404(Trade, id=trade_id, user=request.user)
+    trade.price = get_price(trade.ticker)
+    trade.live_metrics = trade.get_live_metrics(trade.price)
     return render(request, 'trade_registry/trade_detail.html', {'trade': trade})

@@ -3,8 +3,8 @@ import requests
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from .models import Trade
-from .api.utils import is_ticker_in_session_pool
+from .models import Trade, Ticker
+from .services.utils import is_ticker_in_session_pool
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
@@ -22,16 +22,9 @@ class TradeForm(forms.ModelForm):
     class Meta:
         model = Trade
         
-        fields = ['ticker', 'name', 'buy_date', 'buy_price', 'quantity', 'sell_date', 'sell_price']
+        fields = ['buy_date', 'buy_price', 'quantity', 'sell_date', 'sell_price']
         
         widgets = {
-            'ticker': forms.TextInput(attrs={
-                'id': 'ticker', 
-                'class': 'form-control',
-                'placeholder': 'Ej: AAPL',
-                'autocomplete': 'off'
-            }),
-            'name': forms.HiddenInput(attrs={'id':'name'}),
             'buy_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'sell_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'buy_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
@@ -51,3 +44,21 @@ class TradeForm(forms.ModelForm):
             )
 
         return ticker
+    
+class TickerForm(forms.ModelForm):
+    class Meta:
+        model = Ticker
+
+        fields = ['symbol', 'name']
+
+        widgets = {
+                'symbol': forms.TextInput(attrs={
+                    'id': 'symbol', 
+                    'class': 'form-control',
+                    'placeholder': 'Ej: AAPL',
+                    'autocomplete': 'off'
+                }),
+                'name': forms.HiddenInput(attrs={
+                    'id':'name'
+                })
+        }
