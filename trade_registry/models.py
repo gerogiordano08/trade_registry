@@ -28,23 +28,22 @@ class Trade(models.Model):
         return self.sell_date is not None and self.sell_price is not None
     @property
     def profit(self):
-        return (self.sell_price - self.buy_price) * self.quantity if self.is_ended else None #type:ignore
+        return (self.sell_price - self.buy_price) * self.quantity if self.is_ended else 0 #type:ignore
     @property
     def percentage_profit(self):
-        return self.profit /(self.quantity * self.buy_price) * 100 if self.is_ended else None #type:ignore
+        return self.profit /(self.quantity * self.buy_price) * 100 if self.is_ended else 0 #type:ignore
     @property
-    def profit_to_loss(self):
-        return self.profit * -1 if self.profit < 0 else self.profit #type:ignore
+    def abs_profit(self):
+        return abs(self.profit)
     @property
-    def percentage_profit_to_loss(self):
-        return self.percentage_profit * -1 if self.percentage_profit < 0 else self.percentage_profit #type:ignore
+    def abs_percentage_profit(self):
+        return abs(self.percentage_profit)
+    
     def get_live_metrics(self, price):
         live_profit = (Decimal(price) - self.buy_price) * self.quantity
-        live_percentage_profit = ((Decimal(price) - self.buy_price) / self.buy_price )* 100 
+        live_percentage_profit = abs(((Decimal(price) - self.buy_price) / self.buy_price ) * 100 )
         is_loss = live_profit < 0
-        if live_profit < 0:
-            live_profit = live_profit * -1
-            live_percentage_profit = live_percentage_profit * -1
+        live_profit = abs(live_profit)
         return TradeMetrics(live_price=price, live_profit=live_profit, live_percentage_profit=live_percentage_profit, is_loss=is_loss)
 
 class News(models.Model):

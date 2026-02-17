@@ -21,10 +21,10 @@ Trade Registry{% endblock %} {% block content %}{% load static %}{% load django_
       </div>
       <div class="profits">
         <p class="ended"><strong>Status:</strong> Ended</p>
-        {% if  trade.profit > 0 %}
+        {% if  trade.profit >= 0 %}
         <p class="profit" ><strong>Profit:</strong> <span style="color: #2e7d32; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.profit|floatformat:2 }}" data-pct="{{ trade.percentage_profit|floatformat:2}}">${{ trade.profit }}</span></p>
         {% else %}
-        <p class="profit" ><strong>Loss:</strong> <span style="color: #c62828; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.profit_to_loss|floatformat:2 }}" data-pct="{{ trade.percentage_profit_to_loss|floatformat:2}}">${{ trade.profit_to_loss }}</span></p>
+        <p class="profit" ><strong>Loss:</strong> <span style="color: #c62828; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.abs_profit|floatformat:2 }}" data-pct="{{ trade.abs_percentage_profit|floatformat:2}}">${{ trade.abs_profit }}</span></p>
         {% endif %}
       </div>
 
@@ -32,7 +32,7 @@ Trade Registry{% endblock %} {% block content %}{% load static %}{% load django_
       <div class="profits">
         <p class="ended"><strong>Status:</strong> Ongoing </p>
         <p class="ended"><strong>Price:</strong> ${{ trade.price|floatformat:2 }}</p>
-        {% if  trade.live_metrics.is_loss == False %}
+        {% if  trade.live_metrics.is_loss is not True %}
         <p class="alt_profit">
           Profit if sold now: <span style="color: #2e7d32; cursor: pointer;" class="profit-toggle" onclick="toggleProfit(this)" data-abs="{{ trade.live_metrics.live_profit|floatformat:2 }}" data-pct="{{ trade.live_metrics.live_percentage_profit|floatformat:2}}">${{ trade.live_metrics.live_profit|floatformat:2 }}</span>
         </p>
@@ -46,7 +46,7 @@ Trade Registry{% endblock %} {% block content %}{% load static %}{% load django_
     {% endif %}  
     <form class="delform"action="{% url 'delete_trade' trade.id %}" method="post" style="display:inline;">
     {% csrf_token %}
-    <button type="submit" class="delbutton">Eliminar</button>
+    <button type="submit" class="delbutton">Delete</button>
     </form>
   </div>
   {% endfor %} {% else %}

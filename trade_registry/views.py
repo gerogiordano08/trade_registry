@@ -92,13 +92,6 @@ def settings(request):
         return redirect('index')
     return render(request, 'trade_registry/settings.html', {'user': user})
 @login_required
-def delete_trade(request, trade_id):
-    trade = get_object_or_404(Trade, id=trade_id, user=request.user)
-    if request.method == 'POST':
-        trade.delete()
-        return redirect('trades')
-    return render(request, 'trade_registry/confirm_delete.html', {'trade': trade})
-@login_required
 def trade_detail(request, trade_id):
     trade = get_object_or_404(Trade, id=trade_id, user=request.user)
     trade.price = get_price(trade.ticker)
@@ -107,20 +100,32 @@ def trade_detail(request, trade_id):
 
 @login_required
 def delete_trade(request, trade_id):
-    trade = get_object_or_404(Trade, id=trade_id, user=request.user)
-    symbol = trade.ticker.symbol
-    trade.delete()
-    
-    messages.success(request, f"{symbol} trade has been deleted permanently.")
-    return redirect('trades') 
+    if request.method == 'POST':
+        trade = get_object_or_404(Trade, id=trade_id, user=request.user)
+        symbol = trade.ticker.symbol
+        if request.POST.get('symbol').upper() == symbol:
+            trade.delete()
+            messages.success(request, f"{symbol} trade has been deleted permanently.")
+        else:
+            messages.error(request, "Incorrect symbol entered.")
+            return redirect('trade_detail', trade_id=trade_id)
+    return redirect('trades')
 
 @login_required
 def close_trade(request, trade_id):
-    trade = get_object_or_404(Trade, id=trade_id, user=request.user)
+    if request.method == 'POST':
+        trade = get_object_or_404(Trade, id=trade_id)
+        
+        sell_price = request.POST.get('sell_price')
+        
+        if sell_price:
+            trade.sell_price = sell_price
+            trade.sell_date = timezone.now()
+            trade.save()
+            messages.success(request, f"Trade closed")
+        else:
+            messages.error(request, "Must enter a valid price.")
+            
+        return redirect('trade_detail', trade_id=trade_id)
     
-    trade.sell_date = timezone.now()
-    # trade.sell_price =
-    trade.save()
-    
-    messages.info(request, f"{trade.ticker.symbol} closed succesfully.")
-    return redirect('trade_detail', {'trade': trade})
+    return redirect('trades')
