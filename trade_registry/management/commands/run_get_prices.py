@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = 'Executes news scraper and saves news to DB.'
+    help = 'Executes price getter and saves last_price to DB.'
     def handle(self, *args, **options):
         tickers = Ticker.objects.all()
         ticker_set = set(ticker.symbol for ticker in tickers)

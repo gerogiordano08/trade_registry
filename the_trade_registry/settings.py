@@ -40,9 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_spectacular',
-    "django_bootstrap5"
+    'django_bootstrap5',
+    'django_crontab'
 ]
-
+CRONJOBS = [
+    ('*/5 * * * 1-5', 'trade_registry.management.commands.run_get_prices'),
+    ('0 */2 * * *', 'trade_registry.management.commands.run_news_scraper'),
+    ('0 * */7 * *', 'trade_registry.management.commands.run_news_cleaner')
+]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',

@@ -44,10 +44,7 @@ Trade Registry{% endblock %} {% block content %}{% load static %}{% load django_
       </div>
     
     {% endif %}  
-    <form class="delform"action="{% url 'delete_trade' trade.id %}" method="post" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit" class="delbutton">Delete</button>
-    </form>
+
   </div>
   {% endfor %} {% else %}
   <p>No trades found.</p>

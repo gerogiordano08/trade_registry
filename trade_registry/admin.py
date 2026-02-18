@@ -19,6 +19,6 @@ class NewsAdmin(admin.ModelAdmin):
 
 @admin.register(Ticker)
 class TickerAdmin(admin.ModelAdmin):
-    list_display = ('symbol', 'name')
+    list_display = ('symbol', 'name', 'last_price')
     search_fields = ('symbol',)
 

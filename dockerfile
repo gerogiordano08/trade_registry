@@ -11,7 +11,7 @@ ENV PYTHONUNBUFFERED=1
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* 
 
 COPY requirements.txt .
 RUN pip3 install --upgrade pip && \
@@ -27,10 +27,12 @@ WORKDIR /usr/src/app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     netcat-openbsd \
+    cron \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiamos solo las librerías instaladas desde el builder
 COPY --from=builder /install /usr/local
+COPY --from=builder /install /usr/bin
 COPY . .
 
 # Creamos la carpeta de datos y estáticos, y asignamos permisos

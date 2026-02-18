@@ -60,12 +60,13 @@ class News(models.Model):
     def get_delta_time(self) -> str:
         now = timezone.now()
         delta = now - self.published
-        if delta.seconds < 60:
-            return f"{delta.seconds} second{'s' if math.floor(delta.seconds) != 1 else ''}"
-        if delta.seconds < 60*60:
-            return f"{math.floor(delta.seconds/60)} minute{'s' if math.floor(delta.seconds/60) != 1 else ''}" 
+        total_seconds = int(delta.total_seconds())
+        if total_seconds < 60:
+            return f"{total_seconds} second{'s' if math.floor(total_seconds) != 1 else ''}"
+        if total_seconds < 60*60:
+            return f"{math.floor(total_seconds/60)} minute{'s' if math.floor(total_seconds/60) != 1 else ''}" 
         if delta.days < 1:
-            return f"{math.floor(delta.seconds/(60*60))} hour{'s' if math.floor(delta.seconds/(60*60)) != 1 else ''}"
+            return f"{math.floor(total_seconds/(60*60))} hour{'s' if math.floor(total_seconds/(60*60)) != 1 else ''}"
         if delta.days < 365: 
             return f"{delta.days} day{'s' if math.floor(delta.days) != 1 else ''}"
         if delta.days > 365:
