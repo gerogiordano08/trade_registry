@@ -1,13 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Trade, Ticker
+from .models import Trade, Ticker, News
 from .services.utils import get_live_prices_bulk, get_price
 from django.db import transaction
 from django.contrib.auth import login
 from .forms import CustomUserCreationForm, TradeForm, TickerForm
 from django.contrib import messages
 from django.utils import timezone
-
 # Create your views here.
 @login_required
 def register_trade(request):
@@ -23,6 +22,8 @@ def register_trade(request):
                     if created:
                         ticker_obj.symbol = symbol
                         ticker_obj.name = ticker_form.cleaned_data.get('name') or ""
+                        ticker_obj.save()
+                        ticker_obj.last_price = get_price(ticker_obj)
                         ticker_obj.save()
                     
                     trade = trade_form.save(commit=False)
@@ -43,13 +44,9 @@ def register_trade(request):
 @login_required
 def list_trades(request):
     trades = Trade.objects.filter(user=request.user).order_by('-buy_date')
-    ticker_set = set(trade.ticker.symbol for trade in trades if not trade.sell_date)
-    live_prices = get_live_prices_bulk(ticker_set)
     for trade in trades:
-        if not trade.sell_date:
-            trade.price = live_prices[trade.ticker.symbol]
             try:
-                trade.live_metrics = trade.get_live_metrics(trade.price)
+                trade.live_metrics = trade.get_live_metrics(trade.ticker.last_price)
             except Exception as e:
                 print("Live price couldn't be fetched")
                 trade.live_metrics = trade.get_live_metrics(trade.buy_price)
@@ -57,8 +54,17 @@ def list_trades(request):
     return render(request, 'trade_registry/trades.html', {'trades': trades})
 @login_required
 def index(request):
-    first_name = request.user.first_name if request.user.first_name else "User"
-    return render(request, 'trade_registry/index.html', {'first_name': first_name})
+    news = News.objects.all()
+    trades = Trade.objects.filter(user=request.user).order_by('-buy_date')
+    tickers = Ticker.objects.all()
+    for trade in trades:
+        try:
+            trade.live_metrics = trade.get_live_metrics(trade.ticker.last_price)
+        except Exception as e:
+            print("Live price couldn't be fetched")
+            trade.live_metrics = trade.get_live_metrics(trade.buy_price)
+            return render(request, 'trade_registry/index.html', {'tickers': tickers, 'news': news, 'trades': trades})
+    return render(request, 'trade_registry/index.html', {'tickers': tickers, 'news': news, 'trades': trades})
 @login_required
 def help(request):
     return render(request, 'trade_registry/help.html')

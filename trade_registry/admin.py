@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Trade, News
+from .models import Trade, News, Ticker
 # Register your models here.
 @admin.register(Trade)
 class TradeAdmin(admin.ModelAdmin):
@@ -16,3 +16,9 @@ class NewsAdmin(admin.ModelAdmin):
     search_fields = ('ticker', 'title')
     date_hierarchy = 'published'
     ordering = ('-published',)
+
+@admin.register(Ticker)
+class TickerAdmin(admin.ModelAdmin):
+    list_display = ('symbol', 'name')
+    search_fields = ('symbol',)
+

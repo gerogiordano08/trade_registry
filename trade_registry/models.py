@@ -10,9 +10,10 @@ TradeMetrics = namedtuple('TradeMetrics', ['live_price', 'live_profit', 'live_pe
 class Ticker(models.Model):
     symbol = models.CharField()
     name = models.CharField()
-    
+    last_price = models.DecimalField(max_digits=15, decimal_places=2, null=True)
     def __str__(self) -> str:
         return self.symbol
+    
     
 class Trade(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name= 'trades')

@@ -312,3 +312,11 @@ input[type="number"] {
   padding: 0;
   margin-top: 0.5em;
 }
+.hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
