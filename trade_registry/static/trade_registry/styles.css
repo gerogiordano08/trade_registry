@@ -320,3 +320,8 @@ input[type="number"] {
 .hide-scrollbar::-webkit-scrollbar {
     display: none;
 }
+.accordion-button:hover {
+    background-color: rgba(37, 76, 115, 0.1) !important;
+    color: #254c73 !important; 
+    transition: all 0.3s ease;
+}

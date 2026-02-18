@@ -3,3 +3,4 @@ staticfiles/
 static_deployed/
 __pycache__/
 *.pyc
+.DS_storegi
