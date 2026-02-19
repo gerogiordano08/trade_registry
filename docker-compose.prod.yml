@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  tradereg: 
+    image: gerogiordano08/trade-registry
+    env_file:
+      - .env
+    command: gunicorn --config gunicorn_config.py the_trade_registry.wsgi:application 
+    
+    expose:
+      - "8000"
+    volumes:
+      - ./staticfiles:/app/staticfiles
+      - .:/app
+    restart: always
+    depends_on:
+      - db
+      - redis
+  db:
+      image: postgres:15-alpine
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      environment:
+        - POSTGRES_DB=${POSTGRES_DB}
+        - POSTGRES_USER=${POSTGRES_USER}
+        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  redis:
+    image: redis:alpine
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+      - ./staticfiles:/app/staticfiles
+    depends_on:
+      - tradereg
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot:rw
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+volumes:
+  postgres_data:

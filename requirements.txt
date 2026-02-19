@@ -13,3 +13,4 @@ redis
 django-redis
 feedparser
 django-environ
+django-admin-honeypot
