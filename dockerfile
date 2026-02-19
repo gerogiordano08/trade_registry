@@ -1,4 +1,4 @@
-FROM python:3.12-slim as builder
+FROM python:3.12-slim AS builder
 
 WORKDIR /usr/src/app
 
@@ -22,6 +22,7 @@ WORKDIR /usr/src/app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     netcat-openbsd \
+    cron \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /install /usr/local
