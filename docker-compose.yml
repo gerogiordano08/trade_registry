@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   tradereg: 
-    image: gerogiordano08/trade-registry
+    build: .
+    env_file:
+      - .env
     command: gunicorn --config gunicorn_config.py the_trade_registry.wsgi:application 
     
     ports:
