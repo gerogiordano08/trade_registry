@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-f%hd&j)l@l*m#b8wthv(b7u68)^64!gpfj0c6-^api#qq2uab%'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
@@ -40,14 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_spectacular',
-    'django_bootstrap5',
-    'django_crontab'
+    'django_bootstrap5'
 ]
-CRONJOBS = [
-    ('*/5 * * * 1-5', 'trade_registry.management.commands.run_get_prices'),
-    ('0 */2 * * *', 'trade_registry.management.commands.run_news_scraper'),
-    ('0 * */7 * *', 'trade_registry.management.commands.run_news_cleaner')
-]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -163,31 +158,15 @@ SESSION_SAVE_EVERY_REQUEST = True
 
 SESSION_COOKIE_SAMESITE = 'Lax'
 
-#if IN_PRODUCTION:
-    # --- Configuración para Render (Producción) ---
-#    DEBUG = True
-    # Cookies Seguras: Solo se envían si hay HTTPS
-#    SESSION_COOKIE_SECURE = False
-#    CSRF_COOKIE_SECURE = False
-    
-    # CRUCIAL: Le dice a Django que confíe en el header de Render para saber si es HTTPS.
-    # Sin esto, Django creerá que no es seguro y bloqueará las cookies.
-#    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    
-    # Redirigir todo el tráfico HTTP a HTTPS
-#    SECURE_SSL_REDIRECT = False
-    
-    # Dominios permitidos (Render te da una URL tipo onrender.com)
-#    ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME'), '*']
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
-#else:
-    # --- Configuración para Local (Desarrollo) ---
-DEBUG = True
-#SESSION_COOKIE_SECURE = False
-#CSRF_COOKIE_SECURE = False
-#SECURE_SSL_REDIRECT = False
-#ALLOWED_HOSTS = ['*']
-# settings.py
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    
+SECURE_SSL_REDIRECT = True
+
+DEBUG = False
+
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
@@ -198,6 +177,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'noreply.traderegistry@gmail.com'
-EMAIL_HOST_PASSWORD = 'bcwt tzpz ybqy upyy'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = 'The Trade Registry <noreply.traderegistry@gmail.com>'

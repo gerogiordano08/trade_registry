@@ -4,13 +4,12 @@
     "service": "tradereg",
     "workspaceFolder": "/usr/src/app",
     
-    // Configuraciones de VS Code DENTRO del contenedor
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-python.python", // Autocompletado y linter de Python
+                "ms-python.python",
                 "ms-python.vscode-pylance",
-                "batisteo.vscode-django", // Soporte para plantillas Django
+                "batisteo.vscode-django",
                 "njpwerner.autodocstring",
                 "github.vscode-pull-request-github",
                 "junstyle.vscode-django-support",
@@ -35,10 +34,8 @@
         "installSsh": true
     }
     },
-    // Si tu Dockerfile crea un usuario no-root (como 'appuser'), ponlo aquí:
     "remoteUser": "appuser",
 
-    // Evita que el contenedor se apague al cerrar VS Code
     "shutdownAction": "stopCompose",
 
     "forwardPorts": [8000, 5432],

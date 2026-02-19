@@ -7,11 +7,10 @@ while ! nc -z db 5432; do
 done
 
 echo "PostgreSQL listo. Ejecutando migraciones..."
-
+cron
 python manage.py migrate --no-input
 python manage.py collectstatic --no-input
 
-service cron start
 
 python manage.py crontab add
 

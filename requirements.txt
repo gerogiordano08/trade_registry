@@ -7,9 +7,8 @@ yfinance
 finnhub-python
 gunicorn
 gevent
-whitenoise #
+whitenoise
 django-bootstrap5
 redis
 django-redis
 feedparser
-django-crontab

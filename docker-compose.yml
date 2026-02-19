@@ -1,11 +1,9 @@
 version: '3.8'
 
 services:
-  tradereg: # Nombre del servicio de tu aplicación (se usará como hostname si hubiera otra app)
-    build: . # Indica a Compose que construya la imagen a partir del Dockerfile en el directorio actual
-    volumes:
-    - .:/usr/src/app
-    command: gunicorn --config gunicorn_config.py the_trade_registry.wsgi:application # Comando de arranque (Usa la configuración optimizada)
+  tradereg: 
+    build: . 
+    command: gunicorn --config gunicorn_config.py the_trade_registry.wsgi:application 
     
     ports:
       - "8000:8000"
@@ -22,12 +20,8 @@ services:
         - POSTGRES_DB=${POSTGRES_DB}
         - POSTGRES_USER=${POSTGRES_USER}
         - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      ports:
-        - "5432:5432"
   redis:
     image: redis:alpine
-    ports:
-      - "6379:6379"
 
 volumes:
   postgres_data:

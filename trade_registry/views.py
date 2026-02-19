@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Trade, Ticker, News
-from .services.utils import get_live_prices_bulk, get_price
+from .services.utils import get_price
 from django.db import transaction
 from django.contrib.auth import login
 from .forms import CustomUserCreationForm, TradeForm, TickerForm

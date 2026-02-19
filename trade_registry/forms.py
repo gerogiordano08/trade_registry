@@ -1,8 +1,6 @@
 from django import forms
-import requests
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from .models import Trade, Ticker
 from .services.utils import is_ticker_in_session_pool
 class CustomUserCreationForm(UserCreationForm):
