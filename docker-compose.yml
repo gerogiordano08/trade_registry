@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   tradereg: 
-    build: . 
+    image: gerogiordano08/trade-registry
     command: gunicorn --config gunicorn_config.py the_trade_registry.wsgi:application 
     
     ports:
