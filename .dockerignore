@@ -1,5 +1,8 @@
-
+.env
 .git
+.github
 .gitignore
+__pycache__
+staticfiles
 docker-compose.yml
 docker-compose.*.yml
