@@ -6,7 +6,17 @@ const submitBtn = document.getElementById('submit-button');
 let isTickerValid = false;
 submitBtn.disabled = true;
 
-tickerInput.addEventListener('input', async (e) => {
+const debounce = (fn, delayMs) => {
+    let timeoutId;
+    return (...args) => {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        timeoutId = setTimeout(() => fn(...args), delayMs);
+    };
+};
+
+const fetchTickers = async (e) => {
     const query = e.target.value;
     if (query.length < 2) {
         list.classList.add('d-none');
@@ -20,7 +30,11 @@ tickerInput.addEventListener('input', async (e) => {
     } catch (err) {
         console.error("Error fetching tickers", err);
     }
-});
+};
+
+const debouncedFetchTickers = debounce(fetchTickers, 500);
+
+tickerInput.addEventListener('input', debouncedFetchTickers);
 
 function renderResults(results) {
     list.innerHTML = '';
