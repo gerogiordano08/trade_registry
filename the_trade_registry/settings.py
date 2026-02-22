@@ -109,6 +109,20 @@ CACHES = {
 #drf-spectacular
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': f'{env("ANON_THROTTLE_RATE", default="0")}/min',
+        'user': f'{env("USER_THROTTLE_RATE", default="20")}/min',
+    },
 }
 
 # Configuración de la documentación (Estándares de la comunidad)
