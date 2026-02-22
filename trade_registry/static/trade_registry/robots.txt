@@ -1,11 +1,8 @@
-# Reglas generales para buscadores (Google, Bing, etc.)
 User-agent: *
 Disallow: /admin/       
 Disallow: /login/       
 Disallow: /api/         
 Allow: /static/         
-
-# Bloquear bots de IA para que no usen tu contenido para entrenamiento
 
 User-agent: ClaudeBot
 Disallow: /
