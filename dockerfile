@@ -36,7 +36,6 @@ RUN mkdir -p /usr/src/app/data /usr/src/app/staticfiles && \
     chown -R appuser:appuser /usr/src/app && \
     chmod +x /usr/src/app/entrypoint.sh && \
     chmod 0644 /etc/cron.d/trade-cron && \
-    crontab -u appuser /etc/cron.d/trade-cron && \
     chmod u+s /usr/sbin/cron && \
     touch /var/log/cron.log && \
     chown appuser:appuser /var/log/cron.log

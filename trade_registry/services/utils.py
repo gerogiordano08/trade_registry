@@ -1,19 +1,18 @@
 from django_redis import get_redis_connection
 import logging
 import yfinance as yf
-from django.core.cache import cache
 from trade_registry.models import Ticker
-
+import math
 logger = logging.getLogger(__name__)
 
 def save_tickers_to_session_pool(session_id, serialized_data, ttl=1800):
     """
-    Extrae los símbolos de una lista de diccionarios y los guarda en Redis.
+    Extracts dictionary tickers and saves them to cache.
     
     Args:
-        session_id (str): ID de sesión del usuario.
-        serialized_data (list): Lista de dicts (ej: resultados de la API).
-        ttl (int): Tiempo de vida en segundos.
+        session_id (str): User session id.
+        serialized_data (list): Dictionaries list.
+        ttl (int): Time to live.
     """
     if not session_id or not serialized_data:
         return False
@@ -39,7 +38,10 @@ def save_tickers_to_session_pool(session_id, serialized_data, ttl=1800):
 
 def is_ticker_in_session_pool(session_id, ticker:Ticker):
     """
-    Verifica de forma atómica si un ticker existe en el pool de la sesión.
+    Atomic verification of ticker in session pool
+    Args:
+        session_id(str): session id to get ticker pool
+        ticker(Ticker): ticker for verification
     """
     if not session_id or not ticker:
         return False
@@ -51,28 +53,37 @@ def is_ticker_in_session_pool(session_id, ticker:Ticker):
     except Exception:
         return False
     
-def get_price(ticker:Ticker):
-    cache_key = f"price_{ticker.symbol}"
-    price = cache.get(cache_key)
+def get_price(ticker:Ticker) -> float | None:
+    """
+    Gets live price for a single ticker
+    Args:
+        ticker(Ticker): ticker to get price.
+    Returns:
+        price(float): requested price for ticker arg.
+        None: in case price couldn't be fetched. Prints message."""
     
-    if price is None:
-        data = yf.Ticker(ticker.symbol)
-        price = data.fast_info['last_price']
-        cache.set(cache_key, price, 240)
-    return price
+    data = yf.Ticker(ticker.symbol)
+    price = data.fast_info['last_price']
+    if math.isfinite(price):
+        return price
+    else:
+        print(f"Error fetching {ticker.symbol} price")
 
-def get_live_prices_bulk(ticker_list:set[str]|list[str]):
+def get_live_prices_bulk(ticker_list: set[str] | list[str]) -> dict[str, float]:
+    """
+    Gets live prices for a ticker list
+    Optimized to prevent 'NaN' errors
+    Args:
+        ticker_list(set[str] | list[str]): list or set of saved tickers that require live_price update.
+    Returns:
+        prices(dict[str, float]): dictionary with key(ticker symbol)(str)-value(last_price)(float) pairs.
+        """
+    
     if not ticker_list:
         return {}
 
     prices = {}
-    needed_tickers = []
-    for t in ticker_list:
-        cached = cache.get(f"price_{t}")
-        if cached:
-            prices[t] = cached
-        else:
-            needed_tickers.append(t)
+    needed_tickers = list(ticker_list)
 
     if needed_tickers:
         data = yf.download(
@@ -81,15 +92,42 @@ def get_live_prices_bulk(ticker_list:set[str]|list[str]):
             interval="1m", 
             group_by='ticker', 
             auto_adjust=True, 
-            threads=True
+            threads=True,
+            progress=False
         )
 
         for ticker in needed_tickers:
             try:
-                last_price = data[ticker]['Close'].iloc[-1] # type: ignore
-                prices[ticker] = float(last_price)
-                cache.set(f"price_{ticker}", prices[ticker], 120) 
-            except Exception:
-                prices[ticker] = None 
+                # (MultiIndex vs SingleIndex)
+                ticker_data = data[ticker] if len(needed_tickers) > 1 else data
+                
+                if not ticker_data.empty:
+                    # Drops NaNs from data
+                    valid_prices = ticker_data['Close'].dropna()
+                    
+                    if not valid_prices.empty:
+                        last_price = float(valid_prices.iloc[-1])
+                        
+                        # Checks if infinite or NaN
+                        if math.isfinite(last_price):
+                            prices[ticker] = last_price
+                        else:
+                            print(f"DEBUG: {ticker} returned NaN or infinite value.")
+                            prices[ticker] = None
+                    else:
+                        print(f"DEBUG: {ticker} does not have valid prices in set interval.")
+                        prices[ticker] = None
+                else:
+                    print(f"DEBUG: {ticker} returned empty DataFrame.")
+                    prices[ticker] = None
+                    
+            except Exception as e:
+                print(f"DEBUG: Error processing {ticker}: {str(e)}")
+                prices[ticker] = None
+
+    # Avoids unexisting key error
+    for t in ticker_list:
+        if t not in prices:
+            prices[t] = None
 
     return prices

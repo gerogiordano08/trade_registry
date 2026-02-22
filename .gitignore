@@ -4,3 +4,4 @@ static_deployed/
 __pycache__/
 *.pyc
 .DS_Store
+*.log

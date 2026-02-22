@@ -11,9 +11,9 @@ class TradeAdmin(admin.ModelAdmin):
 
 @admin.register(News)
 class NewsAdmin(admin.ModelAdmin):
-    list_display = ('title', 'ticker', 'link', 'published', 'summary', 'created_at')
-    list_filter = ('published', 'ticker')
-    search_fields = ('ticker', 'title')
+    list_display = ('title', 'link', 'published', 'summary', 'created_at')
+    list_filter = ('published', 'tickers')
+    search_fields = ('title',)
     date_hierarchy = 'published'
     ordering = ('-published',)
 

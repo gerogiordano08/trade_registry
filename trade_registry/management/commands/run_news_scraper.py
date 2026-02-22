@@ -9,5 +9,6 @@ class Command(BaseCommand):
         for ticker in Ticker.objects.all():
             news = fetch_ticker_news(ticker)
             for n in news:
-                News.objects.get_or_create(title=n['title'], defaults=n, ticker=ticker)
+                news_obj, _created = News.objects.get_or_create(title=n['title'], defaults=n)
+                news_obj.tickers.add(ticker)
         self.stdout.write(self.style.SUCCESS("News synced!"))

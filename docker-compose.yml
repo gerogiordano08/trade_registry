@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   tradereg: 
     build: .
@@ -7,6 +5,8 @@ services:
     env_file:
       - .env
     command: gunicorn --config gunicorn_config.py the_trade_registry.wsgi:application 
+    volumes:
+      - ./logs/:/var/log/
     
     ports:
       - "8000:8000"
