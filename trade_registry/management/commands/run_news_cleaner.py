@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
-from trade_registry.services.news_scraper import fetch_ticker_news
-from trade_registry.models import News, Ticker
+from trade_registry.models import News
 from django.utils import timezone
 from datetime import timedelta
 

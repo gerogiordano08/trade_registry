@@ -1,8 +1,0 @@
-# 1. Update prices every 5 mins (Mon-Fri)
-*/5 * * * 1-5 /usr/local/bin/python /usr/src/app/manage.py get_prices >> /var/log/cron.log 2>&1
-
-# 2. Run news scraper every 2 hours
-0 */2 * * * /usr/local/bin/python /usr/src/app/manage.py news_scraper >> /var/log/cron.log 2>&1
-
-# 3. Clean old news every 7 days (at minute 0 of every hour)
-0 0 */7 * * /usr/local/bin/python /usr/src/app/manage.py news_cleaner >> /var/log/cron.log 2>&1

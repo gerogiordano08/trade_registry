@@ -49,9 +49,13 @@ class Trade(models.Model):
 
 class News(models.Model):
     title = models.CharField()
-    ticker = models.ForeignKey(Ticker, on_delete=models.CASCADE, related_name= 'news')
     link = models.CharField()
     published = models.DateTimeField()
+    tickers = models.ManyToManyField(
+        Ticker, 
+        related_name='news',
+        blank=True
+    )
     summary = models.CharField()
     created_at = models.DateTimeField(auto_now_add=True, null=True) 
     class Meta:

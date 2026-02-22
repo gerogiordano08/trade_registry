@@ -22,10 +22,11 @@ env = environ.Env(
     USE_I18N=(bool, True),
     USE_TZ=(bool, True),
 )
+ENV_FILE = "/usr/src/app/var.env"
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+if os.path.exists(os.path.join(BASE_DIR, ".env")):
+    environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -48,8 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_spectacular',
-    'django_bootstrap5',
-    'admin_honeypot'
+    'django_bootstrap5'
 ]
 
 MIDDLEWARE = [
