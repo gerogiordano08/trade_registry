@@ -1,11 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from .serializers import TickerSearchSerializer
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from trade_registry.services.utils import save_tickers_to_session_pool
 from trade_registry.services.service_utils import search_finnhub, search_alpha, search_yahoo
 class TickerSearchAPIView(APIView):
+    permission_classes = [IsAuthenticated]
     """
     Endpoint to search for assets in real time.
     
