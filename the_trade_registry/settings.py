@@ -27,6 +27,11 @@ ENV_FILE = "/usr/src/app/var.env"
 BASE_DIR = Path(__file__).resolve().parent.parent
 if os.path.exists(os.path.join(BASE_DIR, ".env")):
     environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+
+if os.path.exists(ENV_FILE):
+    environ.Env.read_env(ENV_FILE)
+elif os.path.exists(os.path.join(BASE_DIR, ".env")):
+    environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -36,8 +41,8 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = env('ALLOWED_HOSTS')
-CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS')
+ALLOWED_HOSTS = env('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'] if DEBUG else [])
+CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS', default=['http://localhost:8000', 'http://127.0.0.1:8000'] if DEBUG else [])
 # Application definition
 INSTALLED_APPS = [
     'trade_registry.apps.TradeRegistryConfig',
@@ -173,15 +178,74 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Session settings
 SESSION_COOKIE_AGE = env('SESSION_COOKIE_AGE')
-SESSION_EXPIRY_AT_BROWSER_CLOSE = env.bool('SESSION_EXPIRY_AT_BROWSER_CLOSE', default=True)
+SESSION_EXPIRY_AT_BROWSER_CLOSE = env.bool('SESSION_EXPIRY_AT_BROWSER_CLOSE', default=not DEBUG)
 SESSION_SAVE_EVERY_REQUEST = env.bool('SESSION_SAVE_EVERY_REQUEST', default=True)
-SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = env('SESSION_COOKIE_SAMESITE', default='Strict' if not DEBUG else 'Lax')
 
 SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=not DEBUG)
 CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE', default=not DEBUG)
 SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=not DEBUG)
-
+SESSION_COOKIE_HTTPONLY = env.bool('SESSION_COOKIE_HTTPONLY', default=True)
 SECURE_PROXY_SSL_HEADER = env.tuple('SECURE_PROXY_SSL_HEADER', default=None)
+
+# Security Headers
+SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS', default=31536000 if not DEBUG else 0)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=not DEBUG)
+SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD', default=not DEBUG)
+SECURE_CONTENT_TYPE_NOSNIFF = env.bool('SECURE_CONTENT_TYPE_NOSNIFF', default=not DEBUG)
+X_FRAME_OPTIONS = env('X_FRAME_OPTIONS', default='DENY' if not DEBUG else 'SAMEORIGIN')
+SECURE_REFERRER_POLICY = env('SECURE_REFERRER_POLICY', default='strict-origin-when-cross-origin' if not DEBUG else 'same-origin')
+
+# Logging Configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {asctime} {name} {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'django.log',
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'propagate': False,
+        },
+        'trade_registry': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'propagate': False,
+        },
+    },
+}
 
 # Email settings
 if DEBUG:
@@ -194,3 +258,10 @@ EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 EMAIL_HOST_USER = env('EMAIL_HOST_USER', default=None)
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default=None)
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='The Trade Registry <noreply@trade.com>')
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+]

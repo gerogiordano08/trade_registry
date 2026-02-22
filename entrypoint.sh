@@ -7,6 +7,9 @@ chmod 0644 /etc/cron.d/trade-cron
 # Ensure the file ends with a newline (cron requirement)
 echo "" >> /etc/cron.d/trade-cron
 
+mkdir -p /usr/src/app/logs
+chown -R appuser:appuser /usr/src/app/logs
+
 # config envs for cron
 touch /usr/src/app/.env
 printenv | sed 's/^\([^=]*\)=\(.*\)$/export \1="\2"/' > /usr/src/app/.env

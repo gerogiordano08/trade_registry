@@ -6,7 +6,7 @@
     
     <div class="d-flex container col-lg-8 justify-content-between align-items-center mb-5" >
         <div>
-            <h1 class="fw-bold mb-0">Welcome to The Trade Registry, {{ user.name|default:"Trader" }}</h1>
+            <h1 class="fw-bold mb-0" style="max-width: 90%;">Welcome to The Trade Registry, {{ user.first_name|default:"Trader" }}</h1>
             <p class="text-muted">Analyze your performance and latest market trends.</p>
         </div>
         <div class="d-flex gap-2">
