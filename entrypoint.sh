@@ -10,11 +10,6 @@ echo "" >> /etc/cron.d/trade-cron
 mkdir -p /usr/src/app/logs
 chown -R appuser:appuser /usr/src/app/logs
 
-# config envs for cron
-touch /usr/src/app/.env
-printenv | sed 's/^\([^=]*\)=\(.*\)$/export \1="\2"/' > /usr/src/app/.env
-chown appuser:appuser /usr/src/app/.env
-
 echo "Waiting for PostgreSQL to start..."
 
 while ! nc -z db 5432; do

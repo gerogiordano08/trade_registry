@@ -4,6 +4,13 @@ services:
     
     env_file:
       - .env
+    secrets:
+      - django_secret_key
+      - email_host_user
+      - email_host_password
+      - finnhub_api_key
+      - postgres_user
+      - postgres_password
     command: gunicorn --config gunicorn_config.py the_trade_registry.wsgi:application 
     volumes:
       - ./logs/:/usr/src/app/logs/
@@ -16,15 +23,30 @@ services:
       - db
       - redis
   db:
-      image: postgres:15-alpine
-      volumes:
-        - postgres_data:/var/lib/postgresql/data
-      environment:
-        - POSTGRES_DB=${POSTGRES_DB}
-        - POSTGRES_USER=${POSTGRES_USER}
-        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=tr-reg
+      - POSTGRES_USER_FILE=/run/secrets/postgres_user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+    secrets:
+      - postgres_user
+      - postgres_password
   redis:
     image: redis:alpine
-
+secrets:
+  django_secret_key:
+    file: ./.secrets/django_secret_key.txt
+  email_host_user:
+    file: ./.secrets/email_host_user.txt
+  email_host_password:
+    file: ./.secrets/email_host_password.txt
+  finnhub_api_key:
+    file: ./.secrets/finnhub_api_key.txt
+  postgres_user:
+    file: ./.secrets/postgres_user.txt
+  postgres_password:
+    file: ./.secrets/postgres_password.txt
 volumes:
   postgres_data:

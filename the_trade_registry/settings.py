@@ -12,6 +12,21 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+def get_secret(secret_name, default=None):
+    """
+    Busca un secreto en /run/secrets/ (Docker Secrets).
+    Si no existe, intenta obtenerlo de las variables de entorno.
+    """
+    secret_path = f'/run/secrets/{secret_name}'
+    
+    if os.path.exists(secret_path):
+        try:
+            with open(secret_path, 'r') as f:
+                return f.read().strip()
+        except IOError:
+            pass
+            
+    return os.environ.get(secret_name, default)
 env = environ.Env(
 
     DEBUG=(bool, False),
@@ -32,12 +47,12 @@ if os.path.exists(ENV_FILE):
     environ.Env.read_env(ENV_FILE)
 elif os.path.exists(os.path.join(BASE_DIR, ".env")):
     environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
-# Quick-start development settings - unsuitable for production
+
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('DJANGO_SECRET_KEY')
-
+SECRET_KEY = get_secret('django_secret_key')
+FINNHUB_API_KEY = get_secret('finnhub_api_key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
@@ -95,11 +110,11 @@ WSGI_APPLICATION = 'the_trade_registry.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('POSTGRES_DB'),
-        'USER': env('POSTGRES_USER'),
-        'PASSWORD': env('POSTGRES_PASSWORD'),
-        'HOST': env('POSTGRES_HOST', default='db'),
-        'PORT': env('POSTGRES_PORT', default='5432'),
+        'NAME': 'tr-reg',
+        'USER': get_secret('postgres_user', default='postgres'),
+        'PASSWORD': get_secret('postgres_password'),
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
 CACHES = {
@@ -255,8 +270,8 @@ else:
 EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = env('EMAIL_PORT')
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
-EMAIL_HOST_USER = env('EMAIL_HOST_USER', default=None)
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default=None)
+EMAIL_HOST_USER = get_secret('email_host_user')
+EMAIL_HOST_PASSWORD = get_secret('email_host_password')
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='The Trade Registry <noreply@trade.com>')
 
 PASSWORD_HASHERS = [

@@ -2,7 +2,13 @@
 .git
 .github
 .gitignore
+.secrets
 __pycache__
 staticfiles
 docker-compose.yml
 docker-compose.*.yml
+logs/
+data/
+.devcontainer/
+nginx/
+readme.md
