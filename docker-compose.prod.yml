@@ -15,6 +15,7 @@ services:
       - "8000"
     volumes:
       - ./staticfiles:/app/staticfiles
+      - ./logs/:/usr/src/app/logs/
     restart: always
     depends_on:
       - db

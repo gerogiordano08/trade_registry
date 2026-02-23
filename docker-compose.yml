@@ -14,7 +14,7 @@ services:
     command: gunicorn --config gunicorn_config.py the_trade_registry.wsgi:application 
     volumes:
       - ./logs/:/usr/src/app/logs/
-      - .:/app
+      - ./trade_registry/migrations/:/usr/src/app/trade_registry/migrations/
     ports:
       - "8000:8000"
     

@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" href="{% static 'trade_registry/favicon.ico' %}" type="image/x-icon">
+    <link rel="icon" href="{% static 'trade_registry/favicon.png' %}" type="image/png">
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: rgb(37, 76, 115); padding: 0.8rem 0;">
@@ -69,7 +69,7 @@
     <footer><a href="mailto:gerogiordano08@gmail.com">Contact: gerogiordano08@gmail.com</a></footer>
     {% block scripts %} 
     {% bootstrap_javascript %}
-    <script src="{% static '/trade_registry/js/navbar_dropdown.js' %}"></script>{% endblock%}
+    {% endblock%}
   </body>
 </html>
 
