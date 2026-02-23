@@ -93,12 +93,54 @@ production environment.
 - **Environment Safety:**
 Secret management via environment variables to keep sensitive credentials
 (like DB passwords and API keys) out of the codebase.
+- **Docker Secrets:**
+Production deployments use Docker Secrets for heightened security. Sensitive data (Django secret key, API keys, database credentials, email credentials) are stored in `.secrets/` directory and mounted as Docker secrets, never exposed in environment variables or docker-compose files.
+Secrets are referenced in docker-compose via `secrets:` section and accessed at `/run/secrets/` inside containers.
+Example:
+```bash
+# Create secret files
+mkdir -p .secrets/
+echo "your-secret-key" > .secrets/django_secret_key.txt
+echo "api-key-value" > .secrets/finnhub_api_key.txt
+
+# Secrets are ignored (added to .gitignore and .dockerignore)
+# Docker automatically mounts them in containers
+```
 - **Production Grade:**
 Deployed on Oracle Cloud using **Gunicorn** as the WSGI server for reliable
 performance.
+
+### Honeypot & Attack Detection
+- **Honeypot Endpoint:**
+A decoy admin panel at `/admin/` captures unauthorized access attempts.
+- **Automatic IP Blacklisting:**
+IPs with 3+ failed login attempts are automatically blacklisted and subsequently blocked.
+- **Comprehensive Logging:**
+All attempts are logged with IP, username, user-agent, and timestamps for security auditing.
+- **Admin Dashboard:**
+View and manage all blacklisted IPs via Django admin interface.
+- **CLI Management:**
+Use the `honeypot_blacklist` management command to manage the blacklist:
+```bash
+# List all blacklisted IPs
+python manage.py honeypot_blacklist --list
+
+# Manually add an IP
+python manage.py honeypot_blacklist --add 1.2.3.4 --reason "Brute force detected"
+
+# Remove an IP from blacklist
+python manage.py honeypot_blacklist --remove 1.2.3.4
+
+# Clear entire blacklist
+python manage.py honeypot_blacklist --clear
+```
+
+### Admin Panel Security
+- **Configurable URL Path:**
+The Django admin panel URL is selected by developer via the `ADMIN_URL_PATH` environment variable to prevent discovery at the standard `/admin/` path.
 ---
 ## You can access deployed version following this link
-TBD
+[traderegistry.tech](traderegistry.tech)
 ## Local Setup
 The project is fully containerized with Docker to ensure a consistent
 environment.

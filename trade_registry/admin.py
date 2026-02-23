@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Trade, News, Ticker
+from .models import Trade, News, Ticker, BlacklistedIP
 # Register your models here.
 @admin.register(Trade)
 class TradeAdmin(admin.ModelAdmin):
@@ -21,4 +21,18 @@ class NewsAdmin(admin.ModelAdmin):
 class TickerAdmin(admin.ModelAdmin):
     list_display = ('symbol', 'name', 'last_price')
     search_fields = ('symbol',)
+
+@admin.register(BlacklistedIP)
+class BlacklistedIPAdmin(admin.ModelAdmin):
+    list_display = ('ip_address', 'attempt_count', 'reason', 'first_attempt', 'last_attempt')
+    list_filter = ('first_attempt', 'last_attempt')
+    search_fields = ('ip_address', 'reason')
+    date_hierarchy = 'last_attempt'
+    ordering = ('-last_attempt',)
+    actions = ['remove_blacklist']
+    
+    def remove_blacklist(self, request, queryset):
+        queryset.delete()
+        self.message_user(request, "Selected IPs have been removed from blacklist.")
+    remove_blacklist.short_description = "Remove selected IPs from blacklist"
 

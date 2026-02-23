@@ -280,3 +280,8 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
 ]
+
+# Honeypot Configuration
+HONEYPOT_ENABLED = env.bool('HONEYPOT_ENABLED', default=True)
+HONEYPOT_AUTO_BLACKLIST = env.bool('HONEYPOT_AUTO_BLACKLIST', default=not DEBUG)
+HONEYPOT_WHITELIST_IPS = env.list('HONEYPOT_WHITELIST_IPS', default=['127.0.0.1', '::1'] if DEBUG else [])

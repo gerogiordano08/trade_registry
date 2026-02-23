@@ -1,12 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Trade, Ticker, News
+from .models import Trade, Ticker, News, BlacklistedIP
 from .services.utils import get_price
 from django.db import transaction
 from django.contrib.auth import login
 from .forms import CustomUserCreationForm, TradeForm, TickerForm
 from django.contrib import messages
 from django.utils import timezone
+from django.http import HttpResponse, HttpResponseForbidden
+from django.conf import settings
+import logging
+
+logger = logging.getLogger('trade_registry')
 # Create your views here.
 @login_required
 def register_trade(request):
@@ -135,3 +140,71 @@ def close_trade(request, trade_id):
         return redirect('trade_detail', trade_id=trade_id)
     
     return redirect('trades')
+
+def honeypot(request):
+    """
+    Honeypot endpoint to log and detect unauthorized access attempts.
+    Auto-blacklists IPs after 3 failed attempts.
+    Respects DEBUG mode and whitelisted IPs for development.
+    """
+    client_ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', 'unknown'))
+    if ',' in client_ip:  # Handle multiple IPs from proxies
+        client_ip = client_ip.split(',')[0].strip()
+    
+    user_agent = request.META.get('HTTP_USER_AGENT', 'unknown')
+    
+    # Check if honeypot is enabled
+    honeypot_enabled = getattr(settings, 'HONEYPOT_ENABLED', True)
+    auto_blacklist_enabled = getattr(settings, 'HONEYPOT_AUTO_BLACKLIST', True)
+    whitelisted_ips = getattr(settings, 'HONEYPOT_WHITELIST_IPS', ['127.0.0.1', '::1'])
+    
+    # Skip blacklisting for whitelisted IPs (useful for localhost testing)
+    is_whitelisted = client_ip in whitelisted_ips
+    
+    # Check if IP is already blacklisted (skip if not enabled or whitelisted)
+    if honeypot_enabled and not is_whitelisted:
+        try:
+            blacklisted = BlacklistedIP.objects.get(ip_address=client_ip)
+            logger.warning(
+                f"HONEYPOT BLOCKED - Blacklisted IP attempted access | "
+                f"IP: {client_ip} | Attempts: {blacklisted.attempt_count} | "
+                f"User-Agent: {user_agent}"
+            )
+            return HttpResponseForbidden("Access denied.")
+        except BlacklistedIP.DoesNotExist:
+            pass
+    
+    if request.method == 'POST':
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
+        
+        logger.warning(
+            f"HONEYPOT ALERT - Unauthorized access attempt | "
+            f"IP: {client_ip} | Username: {username} | "
+            f"User-Agent: {user_agent}"
+        )
+        
+        # Track attempt and potentially blacklist (if enabled and not whitelisted)
+        if honeypot_enabled and auto_blacklist_enabled and not is_whitelisted:
+            try:
+                blacklist_entry = BlacklistedIP.objects.get(ip_address=client_ip)
+                blacklist_entry.attempt_count += 1
+                blacklist_entry.save(update_fields=['attempt_count', 'last_attempt'])
+                
+                if blacklist_entry.attempt_count >= 3:
+                    logger.critical(
+                        f"HONEYPOT - IP BLACKLISTED after {blacklist_entry.attempt_count} attempts | "
+                        f"IP: {client_ip}"
+                    )
+                    return HttpResponseForbidden("Access denied.")
+            except BlacklistedIP.DoesNotExist:
+                BlacklistedIP.objects.create(
+                    ip_address=client_ip,
+                    reason=f"Honeypot login attempt - Username: {username}"
+                )
+    
+    logger.info(f"HONEYPOT - GET request from IP: {client_ip} | User-Agent: {user_agent}")
+    
+    return render(request, 'trade_registry/honeypot.html', {
+        'error': 'Invalid credentials' if request.method == 'POST' else None
+    })

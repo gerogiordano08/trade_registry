@@ -80,3 +80,17 @@ class News(models.Model):
     @property
     def get_age_in_db(self):
         return timezone.now() - self.created_at if self.created_at is not None else timezone.now() - timezone.now()
+
+
+class BlacklistedIP(models.Model):
+    ip_address = models.GenericIPAddressField(unique=True)
+    reason = models.CharField(max_length=255, blank=True)
+    attempt_count = models.PositiveIntegerField(default=1)
+    first_attempt = models.DateTimeField(auto_now_add=True)
+    last_attempt = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-last_attempt']
+    
+    def __str__(self):
+        return f"{self.ip_address} ({self.attempt_count} attempts)"
