@@ -1,5 +1,6 @@
 import requests
 import finnhub
+from django.conf import settings
 import os
 
 
@@ -55,7 +56,7 @@ def search_finnhub(query):
             query(str): search query.
         Returns:
             clean_matches(list[dict]): best matches for search query."""
-        api_key_var = os.environ.get('FINNHUB_API_KEY')
+        api_key_var = getattr(settings, 'FINNHUB_API_KEY', None)
         finnhub_client = finnhub.Client(api_key=api_key_var)
         data = finnhub_client.symbol_lookup(query)
         matches = data.get('result', [])
