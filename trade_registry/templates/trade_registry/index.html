@@ -2,60 +2,56 @@
 {% block title %}Dashboard | The Trade Registry{% endblock %}
 {% load extras%}
 {% block content %}
-<div class="container-fluid py-4 px-5" style="max-height: 450px">
+<div class="container-fluid py-4 px-5 main-dashboard-container" style="">
     
-    <div class="d-flex container col-lg-8 justify-content-between align-items-center mb-5" >
-        <div>
+    <div class="d-flex container col-lg-8 justify-content-between align-items-center mb-5 header-responsive" >
+        <div class="welcome-text">
             <h1 class="fw-bold mb-0" style="max-width: 90%;">Welcome to The Trade Registry, {{ user.first_name|default:"Trader" }}</h1>
             <p class="text-muted">Analyze your performance and latest market trends.</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 button-group">
             <a href="{% url 'register_trade' %}" class="btn btn-primary px-4 fw-bold shadow-sm">
                 <i class="bi bi-plus-circle me-1"></i> Register Trade
             </a>
             <a href="{% url 'trades' %}" class="btn btn-outline-secondary px-4 fw-bold shadow-sm">
-                <i class="bi bi-trash me-1"></i> View Trades
+                <i class="bi bi-list-nested me-1"></i> View Trades
             </a>
         </div>
     </div>
 
     <div class="row g-4 ml-10" >
-        <div class="col-lg-2" style="max-height: 550px; overflow-y: auto; overflow-x: hidden;">
+        <div class="col-lg-auto ticker-sidebar d-none d-lg-block" style="max-height: 550px; overflow-y: auto; overflow-x: hidden;">
             <div class="table-responsive hide-scrollbar" style="max-height: 550px;">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Ticker</th>
-                                <th >Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for ticker in tickers %}
-                            <tr>
-                                <td>
-                                    <div class="fw-bold">{{ ticker.symbol }}</div>
-                                    <small class="text-muted">{{ ticker.name }}</small>
-                                </td>
-                                <td>${{ ticker.last_price|floatformat:2 }}</td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">No tickers found.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticker in tickers %}
+                        <tr>
+                            <td>
+                                <div class="fw-bold">{{ ticker.symbol }}</div>
+                                <small class="text-muted d-none d-lg-block">{{ ticker.name }}</small>
+                            </td>
+                            <td>${{ ticker.last_price|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="2" class="text-center py-4 text-muted">No tickers found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="col-lg-4" style="max-height: 550px; overflow-y: auto; overflow-x: hidden;">
+        <div class="col-lg-auto price-main" style="max-height: 550px; overflow-y: auto; overflow-x: hidden;">
             <div class="p-4 bg-white rounded shadow-sm border-top border-4 border-primary h-100">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h5 class="fw-bold mb-0">Your Ticker Prices</h5>
-                    <small class="text-muted" style="cursor: help;">Click profit values to toggle $ <-> %
-                    </small>
+                    <small class="text-muted" style="cursor: help;">Click profit values to toggle $ <-> %</small>
                 </div>
-                
                 <div class="table-responsive hide-scrollbar" style="max-height: 470px;">
                     <table class="table table-hover align-middle">
                         <thead class="table-light">
@@ -63,15 +59,16 @@
                                 <th>Ticker</th>
                                 <th>Price</th>
                                 <th>Profit</th>
-                                <th class="text-end">Action</th>
+                                <th class="text-end d-none d-lg-block">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for trade in trades %}
                             <tr>
                                 <td>
-                                    <div class="fw-bold">{{ trade.ticker.symbol }}</div>
-                                    <small class="text-muted">{{ trade.ticker.name }}</small>
+                                    <a href="{% url 'trade_detail' trade.id %}" class="btn btn-sm btn-light border d-block d-lg-none"><div class="fw-bold">{{ trade.ticker.symbol }}</div></a>
+                                    <div class="fw-bold d-none d-lg-block">{{ trade.ticker.symbol }}</div>
+                                    <small class="text-muted d-none d-lg-block">{{ trade.ticker.name }}</small>
                                 </td>
                                 <td>${{ trade.ticker.last_price|floatformat:2 }}</td>
                                 <td>
@@ -81,31 +78,32 @@
                                         {{ trade.live_metrics.live_percentage_profit|floatformat:2 }}%
                                     </span>
                                 </td>
-                                <td class="text-end">
-                                    <a href="{% url 'trade_detail' trade.id %}" class="btn btn-sm btn-light border">View Detail</a>
+                                <td class="d-none d-lg-table-cell">
+                                    <a href="{% url 'trade_detail' trade.id %}" class="btn btn-sm btn-light border h-auto">View Detail</a>
                                 </td>
                             </tr>
                             {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">No active trades found.</td>
-                            </tr>
+                            <tr><td colspan="4" class="text-center py-4 text-muted">No active trades found.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
-        <div class="col-lg-5" style="max-height: 550px; overflow-y: auto; overflow-x: hidden;">
+    </div>
+    <div class="row g-4 ml-10 mt-5" >
+        <div class="col-lg-12 news-sidebar" style="max-height: 550px; overflow-y: auto; overflow-x: hidden;">
             <div class="p-4 bg-white rounded shadow-sm border-top border-4 border-warning h-100">
                 <h5 class="fw-bold mb-4">Market News</h5>
-                
                 <div class="list-group list-group-flush overflow-auto hide-scrollbar" style="max-height: 470px;">
                     {% for item in news %}
                     <a href="{{ item.link }}" target="_blank" class="list-group-item list-group-item-action px-0 py-3 border-bottom">
                         <div class="d-flex w-100 justify-content-between mb-1">
-                            <h6 class="fw-bold text-truncate mb-0" style="max-width: 70%;">{{ item.title }}</h6>
-                            <small class="text-muted flex-shrink-0">{{ item.get_delta_time }} ago</small>
+                            <h6 class="fw-bold text-truncate mb-0 d-none d-lg-block" style="max-width: 70%;">{{ item.title }}</h6>
+                            <p class="fw-bold text-truncate mb-0 d-block d-lg-none h7" style="max-width: 100%;">{{ item.title }}</p>
+                            <small class="text-muted flex-shrink-0 d-none d-lg-block" style="white-space: nowrap;">{{ item.get_delta_time }} ago</small>
+                            <small class="text-muted flex-shrink-0 d-block d-lg-none" style="white-space: nowrap; font-size: 10px;">{{ item.get_delta_time }} ago</small>
+
                         </div>
                         <p class="mb-0 small text-muted text-truncate">{{ item.summary }}</p>
                     </a>
@@ -113,6 +111,31 @@
                     <p class="text-center text-muted mt-5">No news available.</p>
                     {% endfor %}
                 </div>
+            </div>
+        </div>
+        <div class="col-lg-auto ticker-sidebar d-lg-none d-block" style="max-height: 550px; overflow-y: auto; overflow-x: hidden;">
+            <div class="table-responsive hide-scrollbar" style="max-height: 550px;">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticker in tickers %}
+                        <tr>
+                            <td>
+                                <div class="fw-bold">{{ ticker.symbol }}</div>
+                                <small class="text-muted d-none d-lg-block">{{ ticker.name }}</small>
+                            </td>
+                            <td>${{ ticker.last_price|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="2" class="text-center py-4 text-muted">No tickers found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
 

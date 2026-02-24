@@ -75,9 +75,10 @@
                         <a href="{{ news.link }}" target="_blank" class="list-group-item list-group-item-action py-3 px-0 border-bottom">                            
                             <div class="d-flex w-100 justify-content-between align-items-center">
                                 <div style="min-width: 0; flex: 1;" class="me-3">
-                                    <h6 class="mb-1 fw-bold text-truncate" style="max-width: 100%;">{{ news.title }}</h6>
+                                    <h6 class="fw-bold text-truncate mb-0 d-none d-lg-block" style="max-width: 70%;">{{ news.title }}</h6>
+                                    <p class="fw-bold text-truncate mb-0 d-block d-lg-none h7" style="max-width: 100%;">{{ news.title }}</p>
                                 </div>
-                                <small class="text-muted flex-shrink-0" style="white-space: nowrap;">{{ news.get_delta_time }} ago</small>
+                                <small class="text-muted flex-shrink-0" style="white-space: nowrap; font-size: 10px;">{{ news.get_delta_time }} ago</small>
                             </div>
                             <p class="mb-0 small text-muted text-truncate">{{ news.summary }}</p>
                         </a>
@@ -155,8 +156,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
 {% block scripts%}
 {% bootstrap_javascript %}
 <script src="{% static '/trade_registry/js/decimal_to_percentage.js' %}"></script>
-{% endblock %}
 {% endblock %}
