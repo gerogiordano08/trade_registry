@@ -14,6 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="icon" href="{% static 'trade_registry/favicon.png' %}" type="image/png">
   </head>
   <body>
@@ -65,11 +66,31 @@
     </div>
   </div>
 </nav>
+<main>
     {% block content %} {% endblock %}
-    <footer><a href="mailto:gerogiordano08@gmail.com">Contact: gerogiordano08@gmail.com</a></footer>
+</main>
+    <footer class="text-white mt-auto">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-12 col-md-6">
+                    <h5 class="fw-bold mb-3">The Trade Registry</h5>
+                    <p class="small opacity-75" style="max-width: 300px;">Your centralized trading control tool</p>
+                </div>
+                <div class="col-12 col-md-6 text-md-end">
+                    <h6 class="text-uppercase fw-bold mb-3">Contact</h6>
+                    <a href="mailto:gerogiordano08@gmail.com" class="text-white-50 text-decoration-none small">
+                        <i class="bi bi-envelope-fill me-2"></i>gerogiordano08@gmail.com
+                    </a>
+                </div>
+            </div>
+            <div class="border-top border-white border-opacity-10 mt-4 pt-3 text-center">
+                <p class="small opacity-50 mb-0">&copy; 2026 The Trade Registry.</p>
+            </div>
+        </div>
+    </footer>
+
     {% block scripts %} 
     {% bootstrap_javascript %}
     {% endblock%}
   </body>
 </html>
-

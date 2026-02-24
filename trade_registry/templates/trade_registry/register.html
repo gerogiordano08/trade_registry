@@ -1,46 +1,75 @@
-{% extends "trade_registry/base.html" %} {% block title %}Register Trade | The Trade Registry{% endblock %} {% block content %} {% load static %}
+{% extends "trade_registry/base.html" %} 
+{% block title %}Register Trade | The Trade Registry{% endblock %} 
+
+{% block content %} 
+{% load static %}
 {% load django_bootstrap5 %}
-{% if error %}
-<p style="color: red">{{ error }}</p>
-{% endif %}
 
-<form id="register" method="POST" class="form">
-  <h1 class="container-header">Register a new trade</h1>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8 bg-white p-4 p-md-5 rounded shadow-sm border" style="width: 95%;">
+            
+            <h1 class="fw-bold mb-4">Register a new trade</h1>
 
-  {% csrf_token %}
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
 
-<div class="mb-3 position-relative">
-    <div class="col-md-12">{% bootstrap_field ticker_form.symbol %}</div>
-    <div>{% bootstrap_field ticker_form.name %}</div>
-    
-    <ul id="tickerDropdown" class="list-group position-absolute w-100 shadow-lg d-none custom_dropdown" style="z-index: 1050; max-height: 200px; overflow-y: auto;">
-        </ul>
+            <form form id="register" method="POST" class="form" autocomplete="off">
+                {% csrf_token %}
 
-        <div class="col-md-12">{% bootstrap_field trade_form.buy_date %}</div>
-            <div class="col-md-12">{% bootstrap_field trade_form.buy_price %}</div>
-            <div class="col-md-12">{% bootstrap_field trade_form.quantity %}</div>
-            <div class="col-md-12">
-                <hr>
-                <h5>Optional Sell Data</h5>
-            </div>
-            <div class="col-md-12">{% bootstrap_field trade_form.sell_date %}</div>
-            <div class="col-md-12">{% bootstrap_field trade_form.sell_price %}</div>
+                <div class="mb-4 position-relative">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            {% bootstrap_field ticker_form.symbol %}
+                        </div>
+                        <div class="col-md-6">
+                            {% bootstrap_field ticker_form.name %}
+                        </div>
+                    </div>
+                    
+                    <ul id="tickerDropdown" class="list-group position-absolute w-100 shadow-lg d-none custom_dropdown" 
+                        style="z-index: 1050; max-height: 200px; overflow-y: auto;">
+                    </ul>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        {% bootstrap_field trade_form.buy_date %}
+                    </div>
+                    <div class="col-md-4">
+                        {% bootstrap_field trade_form.buy_price %}
+                    </div>
+                    <div class="col-md-4">
+                        {% bootstrap_field trade_form.quantity %}
+                    </div>
+                </div>
+
+                <div class="p-3 bg-light rounded mb-4 border border-dashed">
+                    <h5 class="h7 text-muted mb-3"><i class="bi bi-tag me-1"></i>Optional Sell Data</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            {% bootstrap_field trade_form.sell_date %}
+                        </div>
+                        <div class="col-md-6">
+                            {% bootstrap_field trade_form.sell_price %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" id="submit-button" class="btn btn-primary btn-lg fw-bold py-3" disabled>
+                        Register trade
+                    </button>
+                    <a href="{% url 'index' %}" class="btn btn-link text-muted">Cancel</a>
+                </div>
+            </form>
         </div>
-        <div class="col-md-50 d-flex flex-column mb-4">
-    
-    <div class="flex-grow-1"></div> 
-
-    <button type="submit" id="submit-button" class="btn btn-primary w-auto h-auto mt-auto" disabled>
-        Register trade
-    </button>
+    </div>
 </div>
-</div>
-</form>
 
+{% endblock %}
 {% block scripts %}
-{% bootstrap_javascript %}
+    {% bootstrap_javascript %}
     <script src="{% static '/trade_registry/js/ticker_search_dropdown.js' %}"></script>
 {% endblock %} 
-{% endblock %}
-
-

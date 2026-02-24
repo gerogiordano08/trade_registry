@@ -92,8 +92,9 @@
     </div>
 </div>
 
-{% block scripts %}
-{% bootstrap_javascript %}
-    <script src="{% static '/trade_registry/js/decimal_to_percentage.js' %}"></script>
-{% endblock %} 
+
 {% endblock %}
+{% block scripts %}
+    <script src="{% static '/trade_registry/js/decimal_to_percentage.js' %}"></script>
+    {% bootstrap_javascript%}
+{% endblock %} 

@@ -1,45 +1,75 @@
-{% extends "trade_registry/base.html" %} {% block title %}Sign Up | The Trade
-Registry{% endblock %} {% block content %}
+{% extends "trade_registry/base.html" %} 
+{% block title %}Sign Up | The Trade Registry{% endblock %} 
 
-<form class="log-sign-form" method="POST" >
-  <h2 >Sign Up</h2>
-  <br />
-{% csrf_token %}
-  <label for="first_name">First Name</label><br />
-  <input type="text" id="first_name" name="first_name" required placeholder="First Name" value="{{ form.first_name.value|default:''}}"/><br /><br />
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-7">
+            <div class="p-4 p-md-5 bg-white rounded shadow-sm border-top border-4 border-primary">
+                
+                <h2 class="fw-bold mb-4">Create Account</h2>
 
-  <label for="username">Username</label><br />
-  <input type="text" id="username" name="username" required placeholder="Username" value="{{ form.username.value|default:'' }}"/><br /><br />
+                <form method="POST" autocomplete="off" class="form">
+                    {% csrf_token %}
+                    
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="first_name" class="form-label h7 fw-bold text-uppercase">First Name</label>
+                            <input type="text" id="first_name" name="first_name" class="form-control" required placeholder="First Name" value="{{ form.first_name.value|default:''}}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="username" class="form-label h7 fw-bold text-uppercase">Username</label>
+                            <input type="text" id="username" name="username" class="form-control" required placeholder="username" value="{{ form.username.value|default:'' }}">
+                        </div>
+                    </div>
 
-  <label for="email">Email</label><br />
-  <input type="email" id="email" name="email" required placeholder="Email" value="{{ form.email.value|default:'' }}"/><br /><br />
+                    <div class="mb-3">
+                        <label for="email" class="form-label h7 fw-bold text-uppercase">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control" required placeholder="name@example.com" value="{{ form.email.value|default:'' }}">
+                    </div>
 
-  <label for="password1">Password</label><br />
-  <input type="password" id="password1" name="password1" required placeholder="Password"/><br /><br />
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="password1" class="form-label h7 fw-bold text-uppercase">Password</label>
+                            <input type="password" id="password1" name="password1" class="form-control" required placeholder="••••••••">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="password2" class="form-label h7 fw-bold text-uppercase">Confirm Password</label>
+                            <input type="password" id="password2" name="password2" class="form-control" required placeholder="••••••••">
+                        </div>
+                          {% for error in form.password2.errors %}
+                            {% if "match" in error or "matching" in error %}
+                              <div class="text-danger small mt-2 fw-bold">
+                                  <i class="bi bi-x-circle-fill me-1"></i>
+                                  The passwords you entered do not match.
+                              </div>
+                            {% endif %}
+                          {% endfor %}
+                    </div>
 
-  <label for="password2">Confirm Password</label><br />
-  <input type="password" id="password2" name="password2" required placeholder="Confirm Password"/><br /><br />
+                    <div class="bg-light p-4 rounded mb-4 border shadow-sm">
+                        <h6 class="h7 fw-bold text-muted mb-3"><i class="bi bi-shield-check me-2"></i>Password Requirements:</h6>
+                        <ul class="list-unstyled mb-0 small" style="font-size: 0.85rem;">
+                            <li class="mb-2 {% for error in form.password2.errors %}{% if 'too similar' in error %}text-danger fw-bold{% endif %}{% endfor %}">
+                                Can’t be too similar to your personal information.
+                            </li>
+                            <li class="mb-2 {% for error in form.password2.errors %}{% if 'too short' in error %}text-danger fw-bold{% endif %}{% endfor %}">
+                                Must contain at least 8 characters.
+                            </li>
+                            <li class="mb-2 {% for error in form.password2.errors %}{% if 'too common' in error %}text-danger fw-bold{% endif %}{% endfor %}">
+                                Can’t be a commonly used password.
+                            </li>
+                            <li class="mb-0 {% for error in form.password2.errors %}{% if 'entirely numeric' in error %}text-danger fw-bold{% endif %}{% endfor %}">
+                                Can’t be entirely numeric.
+                            </li>
+                        </ul>
+                    </div>
 
-  <button type="submit">Sign Up</button><br/>
-  <a href="{% url 'login' %}" style="margin-top: 0.5em; position: absolute;">Login</a>
-
-</form>
-
-<ul class="password-conditions">
-  <li class="{% for error in form.password2.errors %}{% if 'too similar' in error %}password-error{% endif %}{% endfor %}">A password can’t be too similar to the users other personal information.</li>
-  <li class="{% for error in form.password2.errors %}{% if 'too short' in error %}password-error{% endif %}{% endfor %}">A password must contain at least 8 characters.</li>
-  <li class="{% for error in form.password2.errors %}{% if 'too common' in error %}password-error{% endif %}{% endfor %}">A password can’t be a commonly used password.</li>
-  <li class="{% for error in form.password2.errors %}{% if 'entirely numeric' in error %}password-error{% endif %}{% endfor %}">A password can’t be entirely numeric.</li>
-</ul>
-{% if form.errors %}
-    {% for error in form.non_field_errors %}
-        <p style="color: red;">{{ error }}</p>
-    {% endfor %}
-    
-    {% for field in form %}
-        {% for error in field.errors %}
-            <p style="color: red;"><strong>{{ field.label }}:</strong> {{ error }}</p>
-        {% endfor %}
-    {% endfor %}
-{% endif %}
+                    <button type="submit" class="btn btn-primary w-100 fw-bold py-3 shadow-sm mb-3">Create Account</button>
+                    <p class="text-center small text-muted">Already have an account? <a href="{% url 'login' %}" class="fw-bold text-decoration-none">Login</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
