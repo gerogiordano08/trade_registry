@@ -139,6 +139,28 @@ python manage.py honeypot_blacklist --clear
 - **Configurable URL Path:**
 The Django admin panel URL is selected by developer via the `ADMIN_URL_PATH` environment variable to prevent discovery at the standard `/admin/` path.
 ---
+### Bulk Ticker Ingestion Utility
+
+The **Trade Registry** features a custom management command designed to seed or update the database with a large volume of tickers efficiently. It leverages Django's `bulk_create` method to minimize database transactions and optimize performance.
+
+#### 1. CSV File Requirements
+To ensure the data is mapped correctly to the **PostgreSQL** schema, your source file must be a standard CSV with the following exact headers:
+
+| Column | Description | Example |
+| :--- | :--- | :--- |
+| `symbol` | The stock ticker symbol (must match Yahoo Finance format) | `AAPL`, `GGAL.BA`, `MELI` |
+| `name` | The full legal name of the company | `Apple Inc.`, `MercadoLibre Inc.` |
+
+> **Important:** The file must be saved with **UTF-8** encoding to properly handle special characters in international company names.
+
+#### 2. Usage
+You can trigger the ingestion process by passing the file path as a positional argument to the management command.
+
+**Local Environment:**
+```bash
+python manage.py seed_tickers path/to/your/tickers_list.csv
+```
+The script will iterate through the CSV, prepare the objects, and perform a bulk insertion. Any existing symbols will be skipped or updated depending on your specific command configuration to prevent integrity errors.
 ## You can access deployed version following this link
 [traderegistry.tech](traderegistry.tech)
 ## Local Setup
