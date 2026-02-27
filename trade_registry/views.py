@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from .models import Trade, Ticker, News, BlacklistedIP
 from .services.utils import get_price
@@ -62,13 +63,26 @@ def register_trade(request):
 @login_required
 def list_trades(request):
     trades = Trade.objects.filter(user=request.user).order_by('-buy_date')
+    query = request.GET.get('q')
+    if query:
+        trades = trades.filter(
+            Q(ticker__symbol__icontains=query) |
+            Q(ticker__name__icontains=query)
+        )
+
+    status = request.GET.get('status')
+    if status == 'ended':
+        trades = trades.filter(sell_price__isnull=False)
+    elif status == 'ongoing':
+        trades = trades.filter(sell_price__isnull=True)
+
     for trade in trades:
-            try:
-                trade.live_metrics = trade.get_live_metrics(trade.ticker.last_price)
-            except Exception as e:
-                print("Live price couldn't be fetched")
-                trade.live_metrics = trade.get_live_metrics(trade.buy_price)
-                return render(request, 'trade_registry/trades.html', {'trades': trades})
+        try:
+            trade.live_metrics = trade.get_live_metrics(trade.ticker.last_price)
+        except Exception as e:
+            print("Live price couldn't be fetched")
+            trade.live_metrics = trade.get_live_metrics(trade.buy_price)
+
     return render(request, 'trade_registry/trades.html', {'trades': trades})
 @login_required
 def index(request):
