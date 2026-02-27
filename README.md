@@ -6,15 +6,13 @@ portfolios with ease and precision.
 ---
 ## Key Features
 ### 1. Advanced Financial Dashboard
-- **Dual-Column Layout:**
-A high-density information interface featuring a 12-unit grid system for
-optimal data visualization.
 - **Live Price Tracking:**
 Real-time ticker prices with automatic updates to reflect current market
 conditions.
+- **Relational-Live Synthesis:**
+Implementation of a hybrid data layer that merges PostgreSQL-stored trades with real-time price volatility
 - **Global News Feed:**
-A dedicated market news section with relative time logic (e.g., *"5 minutes
-ago"*) to keep you informed of the latest trends.
+A dedicated market news section with relative time logic to keep you informed of the latest trends.
 ---
 ### 2. Trade Management & Metrics
 - **Comprehensive Lifecycle:**
@@ -28,9 +26,8 @@ data.
 currency values and percentage performance with a single click.
 ---
 ### 3. Professional User Interface
-- **Modern Navigation:**
-A sleek, dark-themed navbar with user profile management and intuitive
-dropdowns.
+- **Streamlined Access Architecture**
+An intuitive navigation framework designed to centralize user profile management and technical support modules.
 - **Interactive Help Center:**
 A dedicated support section featuring Bootstrap accordions for FAQs and
 direct technical contact.
@@ -48,7 +45,6 @@ Fully optimized for mobile and desktop views using Bootstrap 5.
 Implementation of RESTful API that receives tickers and information from outside services and offers it to an endpoint.
 ## Redis
 Use of redis to cache ticker information, reducing unnecesary API requests.
----
 ## Background Tasks & Automation
 The system relies on **Django Management Commands** and **System Cron** to
 maintain data freshness and system health:
