@@ -23,11 +23,11 @@ class TradeForm(forms.ModelForm):
         fields = ['buy_date', 'buy_price', 'quantity', 'sell_date', 'sell_price']
         
         widgets = {
-            'buy_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'sell_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'buy_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-            'sell_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+            'buy_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'autocomplete': 'off'}),
+            'sell_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'autocomplete': 'off'}),
+            'buy_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'autocomplete': 'off'}),
+            'sell_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'autocomplete': 'off'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control', 'autocomplete': 'off'}),
         }
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
@@ -60,3 +60,12 @@ class TickerForm(forms.ModelForm):
                     'id':'name'
                 })
         }
+    
+    def validate_unique(self):
+        # Skip unique validation since we use get_or_create in the view
+        pass
+    
+    def _post_clean(self):
+        # Override to skip model validation that checks uniqueness
+        # We handle ticker existence with get_or_create in the view
+        pass

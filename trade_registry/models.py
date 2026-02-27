@@ -8,7 +8,7 @@ import math
 TradeMetrics = namedtuple('TradeMetrics', ['live_price', 'live_profit', 'live_percentage_profit', 'is_loss'])
 
 class Ticker(models.Model):
-    symbol = models.CharField()
+    symbol = models.CharField(unique=True)
     name = models.CharField()
     last_price = models.DecimalField(max_digits=15, decimal_places=2, null=True)
     def __str__(self) -> str:
