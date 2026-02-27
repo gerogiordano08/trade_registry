@@ -5,9 +5,38 @@
 {% load static %}{% load django_bootstrap5 %}
 
 <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="fw-bold m-0">Your trades</h1>
-        <a href="{% url 'register_trade' %}" class="btn btn-primary shadow-sm fw-bold">
+<div class="d-flex flex-wrap flex-md-nowrap justify-content-between align-items-center mb-4 gap-3">
+        
+        <h1 class="fw-bold m-0 text-nowrap">Your trades</h1>
+
+        <form method="GET" action="." class="d-flex flex-wrap flex-lg-nowrap flex-grow-1 mx-md-4 gap-2 gap-md-3 order-3 order-md-2 w-100 w-md-auto">
+            
+            <div class="input-group shadow-sm rounded-pill overflow-hidden border bg-white flex-grow-1 w-100 w-md-auto">
+                <span class="input-group-text bg-white border-0 ps-3">
+                    <i class="bi bi-search text-muted"></i>
+                </span>
+                <input type="text" name="q" class="form-control border-0 ps-0" 
+                       placeholder="Search ticker, name..." value="{{ request.GET.q|default:'' }}"
+                       style="box-shadow: none; height: 38px;">
+            </div>
+
+            <div class="d-flex gap-2 justify-content-center justify-content-md-start w-100 w-md-auto">
+                <input type="radio" class="btn-check" name="status" id="all" value="" onchange="this.form.submit()" {% if not request.GET.status %}checked{% endif %}>
+                <label class="btn btn-outline-primary rounded-pill px-3 shadow-sm btn-sm d-flex align-items-center" for="all" style="height: 38px;">All</label>
+
+                <input type="radio" class="btn-check" name="status" id="ongoing" value="ongoing" onchange="this.form.submit()" {% if request.GET.status == 'ongoing' %}checked{% endif %}>
+                <label class="btn btn-outline-primary rounded-pill px-3 shadow-sm btn-sm d-flex align-items-center text-nowrap" for="ongoing" style="height: 38px;">
+                    Ongoing {% if request.GET.status == 'ongoing' %}{% endif %}
+                </label>
+
+                <input type="radio" class="btn-check" name="status" id="ended" value="ended" onchange="this.form.submit()" {% if request.GET.status == 'ended' %}checked{% endif %}>
+                <label class="btn btn-outline-primary rounded-pill px-3 shadow-sm btn-sm d-flex align-items-center text-nowrap" for="ended" style="height: 38px;">
+                    Ended {% if request.GET.status == 'ended' %}{% endif %}
+                </label>
+            </div>
+        </form>
+
+        <a href="{% url 'register_trade' %}" class="btn btn-primary shadow-sm fw-bold text-nowrap rounded-pill order-2 order-md-3" style="height: 38px; display: flex; align-items: center;">
             <i class="bi bi-plus-lg me-1"></i> Register new trade
         </a>
     </div>
@@ -83,11 +112,32 @@
         {% endfor %} 
         {% else %}
         <div class="col-12">
-            <div class="text-center py-5 bg-white rounded shadow-sm">
-                <i class="bi bi-folder2-open h1 text-muted"></i>
-                <p class="mt-2 text-muted">No trades found. Start by registering your first operation!</p>
-            </div>
+    <div class="text-center py-5 bg-white rounded-4 shadow-sm border border-dashed">
+        <div class="mb-3">
+            <i class="bi bi-graph-up-arrow h1 text-primary opacity-25"></i>
         </div>
+        <h4 class="fw-bold text-dark">No trades to show</h4>
+        <p class="text-muted mx-auto" style="max-width: 350px;">
+            {% if request.GET.q or request.GET.status %}
+                It seems like no records match your current filters. Try adjusting your search!
+            {% else %}
+                Your registry is empty. Ready to record your first market move?
+            {% endif %}
+        </p>
+        
+        <div class="mt-4">
+            {% if request.GET.q or request.GET.status %}
+                <a href="{% url 'trades' %}" class="btn btn-outline-secondary btn-sm rounded-pill px-4">
+                    <i class="bi bi-arrow-left-short"></i> Clear all filters
+                </a>
+            {% else %}
+                <a href="{% url 'register_trade' %}" class="btn btn-primary btn-sm rounded-pill px-4 shadow-sm">
+                    Let's start!
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
         {% endif %}
     </div>
 </div>
