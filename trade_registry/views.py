@@ -18,7 +18,11 @@ def register_trade(request):
     if request.method == 'POST':
         trade_form = TradeForm(request.POST, prefix='trade')
         ticker_form = TickerForm(request.POST, prefix='ticker')
-        if ticker_form.is_valid() and trade_form.is_valid():
+
+        ticker_valid = ticker_form.is_valid()
+        trade_valid = trade_form.is_valid()
+        
+        if ticker_valid and trade_valid:
             symbol = ticker_form.cleaned_data.get('symbol').upper()
             try:
                 with transaction.atomic():
@@ -37,8 +41,17 @@ def register_trade(request):
                     trade.save()
                     return redirect('trades')
             except Exception as e:
+                logger.error(f"Database error in register_trade: {e}")
                 trade_form.add_error(None, f"Database error: {e}")
+        else:
+            if not ticker_valid:
+                logger.warning(f"Ticker form errors: {ticker_form.errors.as_json()}")
+                print(f"DEBUG: Ticker form errors: {ticker_form.errors.as_json()}")
+            if not trade_valid:
+                logger.warning(f"Trade form errors: {trade_form.errors.as_json()}")
+                print(f"DEBUG: Trade form errors: {trade_form.errors.as_json()}")
     else:
+        
         trade_form = TradeForm(prefix='trade')
         ticker_form = TickerForm(prefix='ticker')
 
